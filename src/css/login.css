@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Poppins&display=swap');
+
+.login{
+background-image: url('../Img/Login1.jpg');
+/*
+background-size: 100%;
+padding-top: 0px;
+padding-bottom: 0px;
+background-repeat: no-repeat;
+min-height: 100vh;
+max-height: 100vh;
+font-family: 'Numans', sans-serif;
+display: flex;
+flex-direction: column;*/
+
+background-size: 100%;
+position: absolute;
+top: 0;
+left: 0;
+overflow: hidden;
+min-width: 100%;
+min-height: 100%;
+}
+
+
+
+.bg{
+    background-image: url('../Img/Logo.jpg'); 
+    position: center center; 
+    background-repeat: no-repeat;
+}
+
+.input-field {
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  
+}
+.label{
+    color: white;
+    }
+
+.bg2{
+    background-image: url('../Img/User.png'); 
+    position: center center; 
+    background-repeat: no-repeat;
+    height: 32px;
+    width: 32px;
+    position: absolute;
+}
+.bg3{
+    background-image: url('../Img/Lock.png'); 
+    position: center center; 
+    background-repeat: no-repeat;
+    height: 32px;
+    width: 32px;
+    position: absolute;
+}
+
+.text{
+    color:white;
+}
+.main {
+    width: 50%;
+    margin: 50px auto;
+}
+
+.form-group .form-control {
+    padding-left: 2.375rem;
+}
+
+.form-group .form-control-icon {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
