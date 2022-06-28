@@ -31,7 +31,7 @@ class Datos{
         return fetch(`${host+table}/delete/${id}`,Header.headerPostSB())
         .then(response=>response.json())
         .then((respDatos)=>respDatos)
-        .catch((error)=>error);
+        .catch((error)=> error);
     }
     ConsultaUser(data){
         return fetch(`${host}usuario/login`,Header.headerPostCBL(data))

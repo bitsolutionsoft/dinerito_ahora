@@ -79,7 +79,7 @@ function Plan(props)  {
     const Eliminar=async(id)=>{
       let plan=await Datos.BorrarReg("plan",id);
       if(plan!==null){
-        if(plan.message==="Success"){
+        if(plan.message === "Success"){
           swal("Plan", "Eliminado con exíto","success")
           ConsultarPlan();
         }else{
@@ -239,7 +239,7 @@ var myInput = document.getElementById("exampleModal");
   </i>
   <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton2">
   <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>AbrirActualizar(item,e.target)} >Editar</li>
-    <li  className="dropdown-item" onClick={()=>Eliminar(item.idempleado)}>Eliminar</li>
+    <li  className="dropdown-item" onClick={()=>Eliminar(item.idplan)}>Eliminar</li>
       
    
   </ul>
