@@ -22,7 +22,8 @@ function Menu(props)  {
   if(ls.get('usuario')===null){
     props.history.push('./')
   }else{
-      setUsuario(ls.get("usuario").nombre)
+
+      setUsuario(ls.get("usuario").usuario)
   }
 }
 
@@ -45,27 +46,27 @@ const acceso = (modulo) => {
 
 
     function ColocarContent(){
-        let usuarios=usuario;
+      
          switch (screen) {
              case 'Plan':
 if(acceso("Plan")){
                     return <Plan />
   
                 }else{
-                        return <AlertModel titulo="Aviso" msg="No tienes acceso a Empleado" />
+                        return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Plan" />
                       }
                
              case 'Empleado':
 if(acceso("Empleado")){
                     return <Empleado />
                   }else{
-                        return <AlertModel titulo="Aviso" msg="No tienes acceso a Cliente" />;
+                        return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Cliente" />;
                       }
                
            
              default:  
 
-             return <AlertModel titulo="Aviso" msg="No tienes acceso a Cliente" />;
+             return <AlertModel tipo="success" titulo={usuario} msg="Bienvenido a Dinerito Ahora" />;
             }
            
      }
