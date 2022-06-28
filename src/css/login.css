@@ -1,18 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Poppins&display=swap');
+@import url('color.css');
 
 .login{
-background-image: url('../Img/Login1.jpg');
-/*
-background-size: 100%;
-padding-top: 0px;
-padding-bottom: 0px;
-background-repeat: no-repeat;
-min-height: 100vh;
-max-height: 100vh;
-font-family: 'Numans', sans-serif;
-display: flex;
-flex-direction: column;*/
-
+background-image: url('../Img/Login.jpg');
 background-size: 100%;
 position: absolute;
 top: 0;
@@ -24,12 +14,15 @@ min-height: 100%;
 
 
 
-.bg{
-    background-image: url('../Img/Logo.jpg'); 
-    position: center center; 
+.imgleft{
+    background-image: url(../Img/Logo.jpg);
+    background-size: cover;
     background-repeat: no-repeat;
-}
 
+}
+.bg{
+   background-color: var(--secondary); 
+}
 .input-field {
     border-radius: 5px;
     padding: 5px;
@@ -39,25 +32,10 @@ min-height: 100%;
   
 }
 .label{
-    color: white;
+    color:var(--secondary);
     }
 
-.bg2{
-    background-image: url('../Img/User.png'); 
-    position: center center; 
-    background-repeat: no-repeat;
-    height: 32px;
-    width: 32px;
-    position: absolute;
-}
-.bg3{
-    background-image: url('../Img/Lock.png'); 
-    position: center center; 
-    background-repeat: no-repeat;
-    height: 32px;
-    width: 32px;
-    position: absolute;
-}
+
 
 .text{
     color:white;
