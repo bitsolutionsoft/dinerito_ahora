@@ -28,10 +28,11 @@ function Menu(props)  {
 
 const acceso = (modulo) => {
     let permiso=ls.get("permiso");
+    console.log(permiso);
  let acceso=false;
     permiso.map((item) =>{
         if(item.nombre === modulo){
-            if(item.escritura ===1){
+            if(item.permiso ===1){
                 acceso= true;
             }
         }
@@ -47,20 +48,19 @@ const acceso = (modulo) => {
         let usuarios=usuario;
          switch (screen) {
              case 'Plan':
-//if(acceso("Plan")){
+if(acceso("Plan")){
                     return <Plan />
   
-
-//                }else{
-  //                      return <AlertModel titulo="Aviso" msg="No tienes acceso a Empleado" />
-    //                  }
+                }else{
+                        return <AlertModel titulo="Aviso" msg="No tienes acceso a Empleado" />
+                      }
                
              case 'Empleado':
-//if(acceso("Empleado")){
+if(acceso("Empleado")){
                     return <Empleado />
-  //                  }else{
-    //                    return <AlertModel titulo="Aviso" msg="No tienes acceso a Cliente" />;
-      //                }
+                  }else{
+                        return <AlertModel titulo="Aviso" msg="No tienes acceso a Cliente" />;
+                      }
                
            
              default:  
