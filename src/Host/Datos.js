@@ -28,7 +28,7 @@ class Datos{
         .catch((error)=>error);
     }
     BorrarReg(table, id){
-        return fetch(`${host+table}/delete/${id}`,Header.headerPostSB())
+        return fetch(`${host+table}/delete/${id}`,Header.headerGets())
         .then(response=>response.json())
         .then((respDatos)=>respDatos)
         .catch((error)=> error);

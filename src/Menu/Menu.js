@@ -29,7 +29,7 @@ function Menu(props)  {
 
 const acceso = (modulo) => {
     let permiso=ls.get("permiso");
-    console.log(permiso);
+    
  let acceso=false;
     permiso.map((item) =>{
         if(item.nombre === modulo){
