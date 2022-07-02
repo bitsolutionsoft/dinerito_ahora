@@ -4,10 +4,10 @@ import md5 from "md5";
 import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
-
+import {Quetzal, Dolar} from '../Funciones/Moneda';
 function Plan(props)  {
     const [idplan, setIdplan] = useState("");
-    const [monto, setMonto] = useState("");
+    const [monto, setMonto] = useState(0.0);
     const [interes, setInteres] = useState("");
     const [plan_dia, setPlan_dia] = useState(""); 
     const [estado, setEstado] = useState("Activo");
@@ -16,10 +16,13 @@ function Plan(props)  {
     const [encontrado, setencontrado] = useState([]);
     const [buscar, setbuscar] = useState("");
     const [accion, setAccion] = useState("new");
-    const [modulo, setmodulo] = useState([]);
+    
+    //const moneda=2;
+    //const Moneda= moneda===1 ? Dolar: Quetzal;
 
     useEffect(()=>{
       ConsultarPlan();
+      console.log(monto)
     },[])
     
     const ConsultarPlan=async()=>{
@@ -46,6 +49,7 @@ function Plan(props)  {
         plan_dia:plan_dia,
         estado:estado
       }
+   
       let plan=await Datos.NuevoReg("plan",datos);
       if(plan !== null){
         if(plan.message==="Success"){
@@ -65,6 +69,7 @@ function Plan(props)  {
         plan_dia:plan_dia,
         estado:estado
       }
+      console.log(datos);
       let plan=await Datos.ActualizarReg("plan",datos);
       if(plan !== null){
         if(plan.message==="Success"){
@@ -224,8 +229,8 @@ var myInput = document.getElementById("exampleModal");
             <tr key={index}>
                
                <td>{item.idplan}</td>
-               <td>{item.monto}</td>
-               <td>{item.interes}</td>
+               <td>{Quetzal(item.monto)}</td>
+               <td>{item.interes+"%"}</td>
                <td>{item.plan_dia}</td>
              
                {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:
