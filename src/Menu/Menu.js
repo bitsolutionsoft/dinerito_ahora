@@ -135,7 +135,7 @@ if(acceso("Cliente")){
                             <i className="bi bi-person-lines-fill" aria-hidden="true"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Cliente</span>
                             </div>
                         </li>
-                        <li onClick={()=>setScreen("Cuenta")} className={screen === "Cuenta" ? nav_active : nav_item}>
+                        <li onClick={()=>setScreen("Cuentas")} className={screen === "Cuenta" ? nav_active : nav_item}>
                             <div    className="align-middle px-0">
                             <i className="bi bi-postcard" aria-hidden="true"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Cuentas</span>
                             </div>
