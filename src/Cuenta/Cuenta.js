@@ -5,6 +5,7 @@ import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
 import {Quetzal, Dolar} from '../Funciones/Moneda';
+import moment from 'moment';
 function Cuenta(props)  {
     const [idcuenta, setIdCuenta] = useState("");
     const [idcliente, setIdCliente] = useState("");
@@ -14,11 +15,11 @@ function Cuenta(props)  {
     
     const [datos, setdatos] = useState([]);  
     const [encontrado, setencontrado] = useState([]);
+    ust
     const [buscar, setbuscar] = useState("");
     const [accion, setAccion] = useState("new");
     
-    //const moneda=2;
-    //const Moneda= moneda===1 ? Dolar: Quetzal;
+   
 
     useEffect(()=>{
       ConsultarCuenta();
@@ -26,14 +27,21 @@ function Cuenta(props)  {
     },[])
     
     const ConsultarCuenta=async()=>{
-      const datos=await Datos.Consulta("Cuenta");
+      const datos=await Datos.Consulta("cuenta");
       if(datos!==null){
         console.log(datos.res);
         setdatos(datos.res);
         setencontrado(datos.res)
       }
     }
-
+const ConsultaCliente = async () => {
+  const datos=await Datos.Consulta("cuenta");
+  if(datos!==null){
+    console.log(datos.res);
+    setdatos(datos.res);
+    setencontrado(datos.res)
+  }
+}
     const limpiar=()=>{
       setIdCuenta(0);
       setIdCliente("");
@@ -169,7 +177,7 @@ var myInput = document.getElementById("exampleModal");
 
   </div>
   <div className="form-outline mb-4">
-      <label className="form-label" htmlFor="form1Example1" >Monto</label>
+      <label className="form-label" htmlFor="form1Example1" >Cliente</label>
       <div className='input-group'>
           <span className="input-group-text">Q</span>
           <input type="text" id="form1Example1" className="form-control" value={idcliente}  onChange={(e) => setIdCliente(e.target.value)} />
@@ -177,7 +185,7 @@ var myInput = document.getElementById("exampleModal");
       </div>
   </div>
   <div className="form-outline mb-4">
-      <label className="form-label" htmlFor="form1Example1" >Interes</label>
+      <label className="form-label" htmlFor="form1Example1" >Plan</label>
       <div className='input-group'>
         <input type="text" id="form1Example1" className="form-control" value={idplan}  onChange={(e) => setIdPlan(e.target.value)} />
         <span class="input-group-text">%</span>
@@ -186,7 +194,7 @@ var myInput = document.getElementById("exampleModal");
 
   </div>
   <div className="form-outline mb-4">
-       <label className="form-label" htmlFor="form1Example1" >Dias del Cuenta</label>
+       <label className="form-label" htmlFor="form1Example1" >Proximo dia de Pago</label>
         <input type="text" id="form1Example1" className="form-control" value={prox_pago}  onChange={(e) => setProx_Pago(e.target.value)} />
 
   </div>
@@ -222,9 +230,9 @@ var myInput = document.getElementById("exampleModal");
   <thead >
           <tr>
             <th>#</th>
-            <th>Monto</th>
-            <th>Interes</th>
-            <th>Dias del Cuenta</th>
+            <th>Cliente</th>
+            <th>Plan</th>
+            <th>Proximo dia de pago</th>
             <th>Estado</th>
             
             <th>Opciones</th>
@@ -236,9 +244,9 @@ var myInput = document.getElementById("exampleModal");
             <tr key={index}>
                
                <td>{item.idcuenta}</td>
-               <td>{Quetzal(item.idcliente)}</td>
-               <td>{item.idplan+"%"}</td>
-               <td>{item.prox_pago}</td>
+               <td>{item.idcliente}</td>
+               <td>{item.idplan}</td>
+               <td>{moment(item.prox_pago).format("DD/MM/YYYY")}</td>
              
                {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:
                <td ><p className="noactivo">{item.estado}</p></td>
