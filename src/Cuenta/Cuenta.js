@@ -5,11 +5,11 @@ import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
 import {Quetzal, Dolar} from '../Funciones/Moneda';
-function Plan(props)  {
-    const [idplan, setIdplan] = useState("");
-    const [monto, setMonto] = useState("");
-    const [interes, setInteres] = useState("");
-    const [plan_dia, setPlan_dia] = useState(""); 
+function Cuenta(props)  {
+    const [idcuenta, setIdCuenta] = useState("");
+    const [idcliente, setIdCliente] = useState("");
+    const [idplan, setIdPlan] = useState("");
+    const [prox_pago, setProx_Pago]=useState("");
     const [estado, setEstado] = useState("Activo");
     
     const [datos, setdatos] = useState([]);  
@@ -21,12 +21,12 @@ function Plan(props)  {
     //const Moneda= moneda===1 ? Dolar: Quetzal;
 
     useEffect(()=>{
-      ConsultarPlan();
-      console.log(monto)
+      ConsultarCuenta();
+      console.log(idcliente)
     },[])
     
-    const ConsultarPlan=async()=>{
-      const datos=await Datos.Consulta("plan");
+    const ConsultarCuenta=async()=>{
+      const datos=await Datos.Consulta("Cuenta");
       if(datos!==null){
         console.log(datos.res);
         setdatos(datos.res);
@@ -35,60 +35,60 @@ function Plan(props)  {
     }
 
     const limpiar=()=>{
-      setIdplan(0);
-      setMonto("");
-      setPlan_dia("");
-      setInteres("");
+      setIdCuenta(0);
+      setIdCliente("");
+      setProx_Pago("");
+      setIdPlan("");
       setEstado("Activo");
     }
     const Ingresar=async()=>{
       let datos={
-        idplan:0,
-        monto:monto,
-        interes:interes,
-        plan_dia:plan_dia,
+        idcuenta:0,
+        idcliente:idcliente,
+        idplan:idplan,
+        prox_pago:prox_pago,
         estado:estado
       }
    
-      let plan=await Datos.NuevoReg("plan",datos);
-      if(plan !== null){
-        if(plan.message==="Success"){
-          swal("Plan","Ingresdo exitosamente","success");
+      let Cuenta=await Datos.NuevoReg("cuenta",datos);
+      if(Cuenta !== null){
+        if(Cuenta.message==="Success"){
+          swal("Cuenta","Ingresdo exitosamente","success");
           limpiar();
-          ConsultarPlan();
+          ConsultarCuenta();
         }else{
-          swal("Plan","No se pudo Ingresar, verifique los datos","warning");
+          swal("Cuenta","No se pudo Ingresar, verifique los datos","warning");
         }
       }
     }
     const Actualizar=async()=>{
       let datos={
+        idcuenta:idcuenta,
+        idcliente:idcliente,
         idplan:idplan,
-        monto:monto,
-        interes:interes,
-        plan_dia:plan_dia,
+        prox_pago:prox_pago,
         estado:estado
       }
       console.log(datos);
-      let plan=await Datos.ActualizarReg("plan",datos);
-      if(plan !== null){
-        if(plan.message==="Success"){
-          swal("Plan","Ingresdo exitosamente","success");
+      let Cuenta=await Datos.ActualizarReg("cuenta",datos);
+      if(Cuenta !== null){
+        if(Cuenta.message==="Success"){
+          swal("Cuenta","Ingresdo exitosamente","success");
           limpiar();
-          ConsultarPlan();
+          ConsultarCuenta();
         }else{
-          swal("Plan","No se pudo Ingresar, verifique los datos","warning");
+          swal("Cuenta","No se pudo Ingresar, verifique los datos","warning");
         }
       }
     }
     const Eliminar=async(id)=>{
-      let plan=await Datos.BorrarReg("plan",id);
-      if(plan!==null){
-        if(plan.message === "Success"){
-          swal("Plan", "Eliminado con exíto","success")
-          ConsultarPlan();
+      let Cuenta=await Datos.BorrarReg("cuenta",id);
+      if(Cuenta!==null){
+        if(Cuenta.message === "Success"){
+          swal("Cuenta", "Eliminado con exíto","success")
+          ConsultarCuenta();
         }else{
-          swal("Plan","No se pudo eliminar","warning");
+          swal("Cuenta","No se pudo eliminar","warning");
         }
       }
     }
@@ -100,10 +100,10 @@ function Plan(props)  {
       }
     }
     const AbrirActualizar=(datos,e)=>{
-setIdplan(datos.idplan);
-setMonto(datos.monto);
-setInteres(datos.interes);
-setPlan_dia(datos.plan_dia);
+setIdCuenta(datos.idcuenta);
+setIdCliente(datos.idcliente);
+setIdPlan(datos.idplan);
+setProx_Pago(datos.prox_pago);
 setEstado(datos.estado)
 setAccion("update");
 
@@ -120,8 +120,8 @@ var myInput = document.getElementById("exampleModal");
       
       setdatos(encontrado.filter(function(item){
           return   item.estado.toLowerCase().includes(text) ;   
-        }).map(function({idplan, monto, interes, plan_dia, estado}){
-          return{idplan, monto, interes, plan_dia, estado}
+        }).map(function({idcuenta, idcliente, idplan, prox_pago, estado}){
+          return{idcuenta, idcliente, idplan, prox_pago, estado}
         })
        );
       
@@ -137,11 +137,11 @@ var myInput = document.getElementById("exampleModal");
     return(
         <div>
             <div className="mb-2">   
-            <h5 className="modal-title">Plan</h5></div>
+            <h5 className="modal-title">Cuenta</h5></div>
             <SearchBar
             onChange={Busqueda} 
             value={buscar} 
-            placeholder="Buscar Plan..."  
+            placeholder="Buscar Cuenta..."  
             data_bs_toggle="modal"
             data_bs_target="#exampleModal"
             onClick={AbrirIngreso}
@@ -159,35 +159,35 @@ var myInput = document.getElementById("exampleModal");
   <div className="modal-dialog">
     <div className="modal-content">
       <div className="modal-header">
-        <h5 className="modal-title">Ingreso de Plan</h5>
+        <h5 className="modal-title">Ingreso de Cuenta</h5>
         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div className="modal-body">
       <div className="form-outline mb-4">
          <label className="form-label" htmlFor="form1Example1" hidden= {true} >Codigo de empleado</label>   
-    <input type="text" id="form1Example1" className="form-control" hidden= {true} value={idplan} onChange={(e) => setIdplan(e.target.value)} />
+    <input type="text" id="form1Example1" className="form-control" hidden= {true} value={idcuenta} onChange={(e) => setIdCuenta(e.target.value)} />
 
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Monto</label>
       <div className='input-group'>
           <span className="input-group-text">Q</span>
-          <input type="text" id="form1Example1" className="form-control" value={monto}  onChange={(e) => setMonto(e.target.value)} />
+          <input type="text" id="form1Example1" className="form-control" value={idcliente}  onChange={(e) => setIdCliente(e.target.value)} />
           <span class="input-group-text">.00</span>
       </div>
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Interes</label>
       <div className='input-group'>
-        <input type="text" id="form1Example1" className="form-control" value={interes}  onChange={(e) => setInteres(e.target.value)} />
+        <input type="text" id="form1Example1" className="form-control" value={idplan}  onChange={(e) => setIdPlan(e.target.value)} />
         <span class="input-group-text">%</span>
       </div>
       
 
   </div>
   <div className="form-outline mb-4">
-       <label className="form-label" htmlFor="form1Example1" >Dias del Plan</label>
-        <input type="text" id="form1Example1" className="form-control" value={plan_dia}  onChange={(e) => setPlan_dia(e.target.value)} />
+       <label className="form-label" htmlFor="form1Example1" >Dias del Cuenta</label>
+        <input type="text" id="form1Example1" className="form-control" value={prox_pago}  onChange={(e) => setProx_Pago(e.target.value)} />
 
   </div>
 
@@ -224,7 +224,7 @@ var myInput = document.getElementById("exampleModal");
             <th>#</th>
             <th>Monto</th>
             <th>Interes</th>
-            <th>Dias del Plan</th>
+            <th>Dias del Cuenta</th>
             <th>Estado</th>
             
             <th>Opciones</th>
@@ -235,10 +235,10 @@ var myInput = document.getElementById("exampleModal");
            datos.map((item,index) =>(
             <tr key={index}>
                
-               <td>{item.idplan}</td>
-               <td>{Quetzal(item.monto)}</td>
-               <td>{item.interes+"%"}</td>
-               <td>{item.plan_dia}</td>
+               <td>{item.idcuenta}</td>
+               <td>{Quetzal(item.idcliente)}</td>
+               <td>{item.idplan+"%"}</td>
+               <td>{item.prox_pago}</td>
              
                {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:
                <td ><p className="noactivo">{item.estado}</p></td>
@@ -251,7 +251,7 @@ var myInput = document.getElementById("exampleModal");
   </i>
   <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton2">
   <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>AbrirActualizar(item,e.target)} >Editar</li>
-    <li  className="dropdown-item" onClick={()=>Eliminar(item.idplan)}>Eliminar</li>
+    <li  className="dropdown-item" onClick={()=>Eliminar(item.idcuenta)}>Eliminar</li>
       
    
   </ul>
@@ -277,5 +277,5 @@ var myInput = document.getElementById("exampleModal");
 
     );
         }
-    export default Plan;
+    export default Cuenta;
     
