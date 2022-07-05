@@ -127,36 +127,14 @@ if(acceso("Empleado")){
                             </div>
                         </li>
 
-                        <li onClick={()=>setScreen("Abono")} className={screen === "Abono" ? nav_active : nav_item}>
-                            <div className=" px-0 align-middle">
-                                <i className="bi bi-credit-card-2-front"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Abonos</span> 
-                                </div>
-                           
-                        </li>
+                      
                         <li onClick={()=>setScreen("Informe")} className={screen === "Informe" ? nav_active : nav_item}>
                         <div    className=" px-0 align-middle">
                                 <i className="bi bi-graph-up-arrow" ></i> <span className="ms-1 d-none d-md-none d-xl-inline">Informe</span>
                                 </div>
                         </li>
                       
-                        <li onClick={()=>setScreen("Bodega")} className={screen === "Bodega" ? nav_active : nav_item}>
-                            <div className=" px-0 align-middle">
-                                <i className="bi bi-archive"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Bodega</span> </div>
-                                
-                        </li>
-
-                        <li onClick={()=>setScreen("Caja")} className={screen === "Caja" ? nav_active : nav_item}>
-                            <div className=" px-0 align-middle">
-                                <i className="bi bi-archive"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Caja</span> 
-                                </div>
-                               
-                        </li>
-
-                        <li onClick={()=>setScreen("Proveedor")} className={screen === "Proveedor" ? nav_active : nav_item}>
-                            <div    className=" px-0 align-middle">
-                                <i className="bi bi-archive"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Proveedores</span> 
-                                </div>
-                        </li>
+                     
                         <li onClick={cerrarSesion} className={screen === "Salir" ? nav_active : nav_item}>
                             <div    className="px-0 align-middle">
                                 <i className="bi bi-box-arrow-in-right"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Salir</span> 
