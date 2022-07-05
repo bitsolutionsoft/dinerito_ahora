@@ -6,6 +6,8 @@ import {Nombre} from '../Host/Info';
 import Plan from '../Plan/Plan';
 import Empleado from '../Empleado/Empleado';
 import AlertModel from '../Menu/AlertModel';
+import Cliente  from '../Cliente/Cliente';
+import Cuenta from '../Cuenta/Cuenta';
 
 function Menu(props)  {
     const [screen, setScreen] = useState("");
@@ -29,7 +31,7 @@ function Menu(props)  {
 
 const acceso = (modulo) => {
     let permiso=ls.get("permiso");
-    
+    console.log(permiso);
  let acceso=false;
     permiso.map((item) =>{
         if(item.nombre === modulo){
@@ -60,10 +62,22 @@ if(acceso("Plan")){
 if(acceso("Empleado")){
                     return <Empleado />
                   }else{
-                        return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Cliente" />;
+                        return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Empleado" />;
                       }
                
-           
+                      case 'Cliente':
+if(acceso("Cliente")){
+                    return <Cliente />
+                  }else{
+                        return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Cliente" />;
+                      }
+                      case 'Cuentas':
+                        if(acceso("Cuentas")){
+                                            return <Cuenta />
+                                          }else{
+                                                return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Cuentas" />;
+                                              }
+               
              default:  
 
              return <AlertModel tipo="success" titulo={usuario} msg="Bienvenido a Dinerito Ahora" />;
