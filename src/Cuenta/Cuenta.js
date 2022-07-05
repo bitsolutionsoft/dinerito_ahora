@@ -1,11 +1,12 @@
 
 import React, { useState,useEffect } from 'react';
-import md5 from "md5";
+
 import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
-import {Quetzal, Dolar} from '../Funciones/Moneda';
+import {Quetzal} from '../Funciones/Moneda';
 import moment from 'moment';
+
 function Cuenta(props)  {
     const [idcuenta, setIdCuenta] = useState("");
     const [idcliente, setIdCliente] = useState("");
@@ -15,7 +16,10 @@ function Cuenta(props)  {
     
     const [datos, setdatos] = useState([]);  
     const [encontrado, setencontrado] = useState([]);
-    ust
+    const [cliente, setCliente] = useState([]);
+    const [filterCliente, setfilterCliente] = useState([]);
+    const [plan, setPlan] = useState([]);
+    const [filterPlan, setFilterPlan] = useState([]);
     const [buscar, setbuscar] = useState("");
     const [accion, setAccion] = useState("new");
     
@@ -23,7 +27,8 @@ function Cuenta(props)  {
 
     useEffect(()=>{
       ConsultarCuenta();
-      console.log(idcliente)
+      ConsultaCliente();
+      ConsultaPlan();
     },[])
     
     const ConsultarCuenta=async()=>{
@@ -35,11 +40,18 @@ function Cuenta(props)  {
       }
     }
 const ConsultaCliente = async () => {
-  const datos=await Datos.Consulta("cuenta");
-  if(datos!==null){
-    console.log(datos.res);
-    setdatos(datos.res);
-    setencontrado(datos.res)
+  const datosCliente=await Datos.Consulta("cliente");
+  if(datosCliente!==null){
+    console.log(datosCliente.res);
+    setCliente(datosCliente.res);
+    setfilterCliente(datosCliente.res)
+  }
+}
+const ConsultaPlan = async() => {
+  const datosPlan=await Datos.Consulta("plan");
+  if(datosPlan !==null){
+setPlan(datosPlan.res);
+setFilterPlan(datosPlan.res)
   }
 }
     const limpiar=()=>{
@@ -48,13 +60,14 @@ const ConsultaCliente = async () => {
       setProx_Pago("");
       setIdPlan("");
       setEstado("Activo");
+      setAccion("new")
     }
     const Ingresar=async()=>{
       let datos={
         idcuenta:0,
         idcliente:idcliente,
         idplan:idplan,
-        prox_pago:prox_pago,
+        prox_pago:moment(prox_pago).format("YYYY-MM-DD"),
         estado:estado
       }
    
@@ -74,7 +87,7 @@ const ConsultaCliente = async () => {
         idcuenta:idcuenta,
         idcliente:idcliente,
         idplan:idplan,
-        prox_pago:prox_pago,
+        prox_pago:moment(prox_pago).format("YYYY-MM-DD"),
         estado:estado
       }
       console.log(datos);
@@ -178,24 +191,32 @@ var myInput = document.getElementById("exampleModal");
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Cliente</label>
-      <div className='input-group'>
-          <span className="input-group-text">Q</span>
-          <input type="text" id="form1Example1" className="form-control" value={idcliente}  onChange={(e) => setIdCliente(e.target.value)} />
-          <span class="input-group-text">.00</span>
-      </div>
+      <select className="form-select form-select-sm" id="floatingSelectGrid" data-live-search="true" data-size="8" aria-label="Floating label select example" value={idcliente} onChange={(e)=>setIdCliente(e.target.value)}>
+                         {cliente ? cliente.map((item,index) =>(
+                         <option key={index} value={item.idcliente} data-tokens={item.nombre}>{item.nombre+ " " +item.apellido}</option>))
+                         :
+                        null
+                          }
+                    </select>
+
+     
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Plan</label>
-      <div className='input-group'>
-        <input type="text" id="form1Example1" className="form-control" value={idplan}  onChange={(e) => setIdPlan(e.target.value)} />
-        <span class="input-group-text">%</span>
-      </div>
+      <select className="form-select form-select-sm" id="floatingSelectGrid" data-live-search="true" data-size="8" aria-label="Floating label select example" value={idplan} onChange={(e)=>setIdPlan(e.target.value)}>
+                         {plan ? plan.map((item,index) =>(
+                         <option key={index} value={item.idplan} data-tokens={item.monto}>{"Cantidad: "+item.monto+ " Interes:" +item.interes+"%"}</option>))
+                         :
+                        null
+                          }
+                    </select>
+   
       
 
   </div>
   <div className="form-outline mb-4">
        <label className="form-label" htmlFor="form1Example1" >Proximo dia de Pago</label>
-        <input type="text" id="form1Example1" className="form-control" value={prox_pago}  onChange={(e) => setProx_Pago(e.target.value)} />
+        <input type="date" id="form1Example1" className="form-control" value={prox_pago}  onChange={(e) => setProx_Pago(e.target.value)} />
 
   </div>
 
@@ -232,6 +253,10 @@ var myInput = document.getElementById("exampleModal");
             <th>#</th>
             <th>Cliente</th>
             <th>Plan</th>
+            <th>Monto</th>
+            <th>Apertura</th>
+            <th>Abonado</th>
+            <th>Mora</th>  
             <th>Proximo dia de pago</th>
             <th>Estado</th>
             
@@ -245,7 +270,11 @@ var myInput = document.getElementById("exampleModal");
                
                <td>{item.idcuenta}</td>
                <td>{item.idcliente}</td>
+               <td>{item.idplan}</td>  
                <td>{item.idplan}</td>
+               <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
+               <td>{Quetzal(item.totalabono)}</td>  
+               <td>{Quetzal(item.totalmora)}</td>
                <td>{moment(item.prox_pago).format("DD/MM/YYYY")}</td>
              
                {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:

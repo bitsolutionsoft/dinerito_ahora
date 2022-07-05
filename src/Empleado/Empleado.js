@@ -25,8 +25,10 @@ function Empleado(props)  {
       },[])
 
       const ConsultarEmpleado=async()=>{
+     
         const datos=await Datos.Consulta("empleado");
-        if(datos!==null){
+      //datos  && datos.res && setdatos(datos.res); setencontrado(datos.res);
+       if(datos!==null){
           console.log(datos.res);
           setdatos(datos.res);
           setencontrado(datos.res)
@@ -39,7 +41,7 @@ function Empleado(props)  {
         setApellido("");
         setDpi("");
         setTelefono("");
-        setCorreo("");
+ 
         setEstado("Activo");
       }
 
@@ -50,7 +52,7 @@ function Empleado(props)  {
           apellido:apellido,
           dpi:dpi,
           telefono:telefono,
-          correo:correo,
+      
           estado:estado
         }
         let empleado=await Datos.NuevoReg("empleado",datos);
@@ -67,12 +69,12 @@ function Empleado(props)  {
 
       const Actualizar=async()=>{
         let datos={
-            idempleado:0,
+            idempleado:idempleado,
           nombre:nombre,
           apellido:apellido,
           dpi:dpi,
           telefono:telefono,
-          correo:correo,
+     
           estado:estado
         }
         let empleado=await Datos.ActualizarReg("empleado",datos);
@@ -113,7 +115,7 @@ function Empleado(props)  {
         setApellido(datos.apellido);
         setDpi(datos.dpi);
         setTelefono(datos.telefono);
-        setCorreo(datos.correo);
+  
         setEstado(datos.estado)
         setAccion("update");
         
@@ -124,13 +126,14 @@ function Empleado(props)  {
             }
 
             const Busqueda =(e)=>{
+              console.log(e.target.value);
                 let buscarTexto=e.target.value;
                 setbuscar(buscarTexto);
                 let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
                 setbuscar(buscarTexto);
                 
                 setdatos(encontrado.filter(function(item){
-                    return   item.estado.toLowerCase().includes(text) ;   
+                    return item.nombre.toLowerCase().includes(text) || item.apellido.toLowerCase().includes(text) ||  item.estado.toLowerCase().includes(text) ;   
                   }).map(function({idempleado, nombre, apellido, dpi, telefono, correo, estado}){
                     return{idempleado, nombre, apellido, dpi, telefono, correo, estado}
                   })
@@ -168,7 +171,7 @@ function Empleado(props)  {
           aria-labelledby="exampleModalLabel"
           aria-hidden={true}
         >
-  <div className="modal-dialog">
+  <div className="modal-dialog modal-dialog-scrollable">
     <div className="modal-content">
       <div className="modal-header">
         <h5 className="modal-title">Ingreso de Empleado</h5>
@@ -201,11 +204,7 @@ function Empleado(props)  {
         <input type="text" id="form1Example1" className="form-control" value={telefono}  onChange={(e) => setTelefono(e.target.value)} />
 
   </div>
-  <div className="form-outline mb-4">
-       <label className="form-label" htmlFor="form1Example1" >Correo</label>
-        <input type="text" id="form1Example1" className="form-control" value={correo}  onChange={(e) => setCorreo(e.target.value)} />
-
-  </div>
+  
 
   
   <div className="form-outline mb-4 center">
@@ -242,7 +241,6 @@ function Empleado(props)  {
             <th>Apellido</th>
             <th>DPI</th>
             <th>Telefono</th>
-            <th>Correo</th>
             <th>Estado</th>
             
             <th>Opciones</th>
@@ -258,7 +256,7 @@ function Empleado(props)  {
                <td>{item.apellido}</td>
                <td>{item.dpi}</td>
                <td>{item.telefono}</td>
-               <td>{item.correo}</td>
+            
 
                {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:
                <td ><p className="noactivo">{item.estado}</p></td>

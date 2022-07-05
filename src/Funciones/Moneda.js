@@ -8,7 +8,7 @@ opciones.posicionSimbolo=opciones.posicionSimbolo || "i";
 const cifraMiles=3;
 
 //redondear y y convetirlo a cadema
-let numeroCadena=numero.toFixed(opciones.numeroDecimal);
+let numeroCadena=numero ? numero.toFixed(opciones.numeroDecimal) : "0.00";
 
 //comenzar desde la izquierda de la cadena 
 let posicionSeparador=numeroCadena.indexOf(opciones.separadorDecimal);
