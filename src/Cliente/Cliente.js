@@ -172,9 +172,9 @@ var myInput = document.getElementById("exampleModal");
       let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
       setbuscar(buscarTexto);
       
-      setdatos(encontrado.filter(function(item){
-          return   item.estado.toLowerCase().includes(text) ;   
-        }).map(function({idcliente, nombre, apellido, telefono, estado}){
+      setdatos(encontrado.filter((item)=>{
+          return   item.nombre.toLowerCase().includes(text) ;   
+        }).map(({idcliente, nombre, apellido, telefono, estado})=>{
           return{idcliente, nombre, apellido, telefono, estado}
         })
        );

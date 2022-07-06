@@ -1,11 +1,14 @@
 
 import React, { useState,useEffect } from 'react';
-
 import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
 import {Quetzal} from '../Funciones/Moneda';
 import moment from 'moment';
+import DropDown from '../Component/DropDown';
+import {ConvetirClAData,ConvetirPlanAData, Obtenercliente,ObtenerPlan} from '../Funciones/Funciones';
+
+
 
 function Cuenta(props)  {
     const [idcuenta, setIdCuenta] = useState("");
@@ -21,14 +24,16 @@ function Cuenta(props)  {
     const [plan, setPlan] = useState([]);
     const [filterPlan, setFilterPlan] = useState([]);
     const [buscar, setbuscar] = useState("");
+    const [buscarCl,setBuscarCl] = useState("");
+    const [buscarPlan, setBuscarPlan] =useState("");
     const [accion, setAccion] = useState("new");
-    
-   
+  
 
     useEffect(()=>{
-      ConsultarCuenta();
-      ConsultaCliente();
+       ConsultaCliente(false);
       ConsultaPlan();
+      ConsultarCuenta();
+     
     },[])
     
     const ConsultarCuenta=async()=>{
@@ -39,12 +44,12 @@ function Cuenta(props)  {
         setencontrado(datos.res)
       }
     }
-const ConsultaCliente = async () => {
+const ConsultaCliente = async (reverse) => {
   const datosCliente=await Datos.Consulta("cliente");
   if(datosCliente!==null){
-    console.log(datosCliente.res);
-    setCliente(datosCliente.res);
-    setfilterCliente(datosCliente.res)
+    let clienteAsc= reverse ? datosCliente.res.reverse() : datosCliente.res;
+    setCliente(clienteAsc);
+    setencontrado(clienteAsc);
   }
 }
 const ConsultaPlan = async() => {
@@ -59,6 +64,8 @@ setFilterPlan(datosPlan.res)
       setIdCliente("");
       setProx_Pago("");
       setIdPlan("");
+      setBuscarCl("")
+      setBuscarPlan("")
       setEstado("Activo");
       setAccion("new")
     }
@@ -121,6 +128,11 @@ setFilterPlan(datosPlan.res)
       }
     }
     const AbrirActualizar=(datos,e)=>{
+      let clienteActual=Obtenercliente(cliente,datos.idcliente);
+      setBuscarCl(clienteActual.nombre+' '+clienteActual.apellido)
+      let planActual=ObtenerPlan(plan,datos.idplan);
+      setBuscarPlan('Cantidad: '+planActual.monto+'  Interes: '+planActual.interes+'%');
+
 setIdCuenta(datos.idcuenta);
 setIdCliente(datos.idcliente);
 setIdPlan(datos.idplan);
@@ -155,6 +167,36 @@ var myInput = document.getElementById("exampleModal");
     });
   }
 
+  const BusquedaCliente =(e)=>{
+    let buscarTexto=e.target.value;
+    setBuscarCl(buscarTexto);
+    let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
+    setBuscarCl(buscarTexto);
+    
+    setCliente(filterCliente.filter((item)=>{
+        return   item.nombre.toLowerCase().includes(text) || item.apellido.toLowerCase().includes(text) ;   
+      }).map(({idcliente, nombre, apellido, telefono, estado})=>{
+        return{idcliente, nombre, apellido, telefono, estado}
+      })
+     );
+    
+      }
+
+      const BusquedaPlan =(e)=>{
+        let buscarTexto=e.target.value;
+        setbuscar(buscarTexto);
+        let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
+        setbuscar(buscarTexto);
+        
+        setdatos(encontrado.filter(function(item){
+            return   item.estado.toLowerCase().includes(text) ;   
+          }).map(function({idplan, monto, interes, plan_dia, estado}){
+            return{idplan, monto, interes, plan_dia, estado}
+          })
+         );
+        
+          }
+      
     return(
         <div>
             <div className="mb-2">   
@@ -177,7 +219,7 @@ var myInput = document.getElementById("exampleModal");
           aria-labelledby="exampleModalLabel"
           aria-hidden={true}
         >
-  <div className="modal-dialog">
+  <div className="modal-dialog modal-dialog-scrollable">
     <div className="modal-content">
       <div className="modal-header">
         <h5 className="modal-title">Ingreso de Cuenta</h5>
@@ -191,25 +233,27 @@ var myInput = document.getElementById("exampleModal");
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Cliente</label>
-      <select className="form-select form-select-sm" id="floatingSelectGrid" data-live-search="true" data-size="8" aria-label="Floating label select example" value={idcliente} onChange={(e)=>setIdCliente(e.target.value)}>
-                         {cliente ? cliente.map((item,index) =>(
-                         <option key={index} value={item.idcliente} data-tokens={item.nombre}>{item.nombre+ " " +item.apellido}</option>))
-                         :
-                        null
-                          }
-                    </select>
-
-     
+      <DropDown 
+        dato = {ConvetirClAData(cliente)} 
+        selected={idcliente} 
+        setSelected={setIdCliente}  
+        value={buscarCl}  
+        setValue={setBuscarCl} 
+        onChange={BusquedaCliente}
+      />
+   
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Plan</label>
-      <select className="form-select form-select-sm" id="floatingSelectGrid" data-live-search="true" data-size="8" aria-label="Floating label select example" value={idplan} onChange={(e)=>setIdPlan(e.target.value)}>
-                         {plan ? plan.map((item,index) =>(
-                         <option key={index} value={item.idplan} data-tokens={item.monto}>{"Cantidad: "+item.monto+ " Interes:" +item.interes+"%"}</option>))
-                         :
-                        null
-                          }
-                    </select>
+      <DropDown 
+        dato = {ConvetirPlanAData(plan)} 
+        selected={idplan} 
+        setSelected={setIdPlan}  
+        value={buscarPlan}  
+        setValue={setBuscarPlan} 
+        onChange={BusquedaPlan}
+      />
+  
    
       
 
