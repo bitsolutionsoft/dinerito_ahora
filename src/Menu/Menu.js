@@ -152,14 +152,14 @@ const acceso = (modulo) => {
                             <i className="bi bi-person-lines-fill" aria-hidden="true"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Cliente</span>
                             </div>
                         </li>
-                        <li onClick={()=>setScreen("Cuentas")} className={screen === "Cuenta" ? nav_active : nav_item}>
+                        <li onClick={()=>setScreen("Cuentas")} className={screen === "Cuentas" ? nav_active : nav_item}>
                             <div    className="align-middle px-0">
                             <i className="bi bi-postcard" aria-hidden="true"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Cuentas</span>
                             </div>
                         </li>
-                        <li onClick={()=>setScreen("Abono")} className={screen === "Cuenta" ? nav_active : nav_item}>
+                        <li onClick={()=>setScreen("Abono")} className={screen === "Abono" ? nav_active : nav_item}>
                             <div    className="align-middle px-0">
-                            <i className="bi bi-wallet2" aria-hidden="true"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Cuentas</span>
+                            <i className="bi bi-wallet2" aria-hidden="true"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Abono</span>
                             </div>
                         </li>
                       
@@ -181,7 +181,7 @@ const acceso = (modulo) => {
                 </div>
             </div>
             
-            <div className="col py-3 max-vh-100 overflow-auto">
+            <div className="col py-3 max-vh-100 overflow-scroll">
             <ColocarContent  /> 
             </div>
         </div>

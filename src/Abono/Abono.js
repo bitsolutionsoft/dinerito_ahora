@@ -6,7 +6,7 @@ import Datos from '../Host/Datos';
 import {Quetzal} from '../Funciones/Moneda';
 import moment from 'moment';
 import DropDown from '../Component/DropDown';
-import ls from "local-storage";
+import ls, { set } from "local-storage";
 import {ConvetirClAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan, ObtenerTipoPago} from '../Funciones/Funciones';
 import {ContextUser} from '../Context/Context';
 
@@ -24,7 +24,7 @@ function Abono(props)  {
     
     const [datos, setdatos] = useState([]);  
     const [encontrado, setencontrado] = useState([]);
-    const [abono, setAbono] = useState([]);
+    const [datosAbono, setDatosAbono] = useState([]);
     const [filterAbono, setFilterAbono] = useState([]);
     const [tipoPago, setTipoPago] = useState([]);
     const [filterTipoPago, setFilterPago] = useState([]);
@@ -32,12 +32,16 @@ function Abono(props)  {
    
     const [buscarTipoPago, setBuscarTipoPago] =useState("");
     const [accion, setAccion] = useState("new");
-
+//datos de para la desplegar la table
+const [open, setOpen]=useState(false)
+const [buscarCuenta,setBuscarCuenta]=useState("");
+const [CuentaSeleccionada,setCuentaSeleccionada] =useState([]);
   //use context
   //  const {currentUser,setCurrentUser} = useContext(ContextUser);
   
 
     useEffect(()=>{
+      
         setIdEmpleado(ls.get("usuario").idempleado)
        ConsultaAbono(false);
       CunsultaTipoPago();
@@ -54,11 +58,11 @@ function Abono(props)  {
       }
     }
 const ConsultaAbono = async (reverse) => {
-  const datosAbono=await Datos.Consulta("abono");
-  if(datosAbono!==null){
-    console.log(datosAbono.res)
-    let abonoAsc= reverse ? datosAbono.res.reverse() : datosAbono.res;
-    setAbono(abonoAsc);
+  const datos_Abono=await Datos.Consulta("abono");
+  if(datos_Abono!==null){
+    console.log(datos_Abono.res)
+    let abonoAsc= reverse ? datos_Abono.res.reverse() : datos_Abono.res;
+    setDatosAbono(abonoAsc);
     setFilterAbono(abonoAsc);
   }
 }
@@ -70,8 +74,10 @@ setFilterPago(datosPago.res)
   }
 }
     const limpiar=()=>{
+     
+      setIdAbono(0) ;
       setIdCuenta(0);
-      setIdEmpleado("");
+    //  setIdEmpleado("");
       setMonto("");
       setConcepto("");
     setTipo_pago("")
@@ -83,11 +89,11 @@ setFilterPago(datosPago.res)
     const Ingresar=async()=>{
       let datos={
         idabono:0,
-        idcuenta:idcuenta,
+        idcuenta: CuentaSeleccionada.idcuenta,
         idempleado:idempleado,
         concepto:concepto,
         monto:monto,
-        tipo_ago:tipo_pago,
+        tipo_pago:tipo_pago,
         comprobante:comprobante,
         //fecha:moment(fecha).format("YYYY-MM-DD"),
         mora:mora,
@@ -99,7 +105,7 @@ setFilterPago(datosPago.res)
         if(Abono.message==="Success"){
           swal("Abono","Ingresdo exitosamente","success");
           limpiar();
-          ConsultaAbono()
+          ConsultaAbono(true)
           ConsultarCuenta();
         }else{
           swal("Abono","No se pudo Ingresar, verifique los datos","warning");
@@ -109,11 +115,11 @@ setFilterPago(datosPago.res)
     const Actualizar=async()=>{
       let datos={
         idabono:idabono,
-        idcuenta:idcuenta,
+        idcuenta: CuentaSeleccionada.idcuenta,
         idempleado:idempleado,
         concepto:concepto,
         monto:monto,
-        tipo_ago:tipo_pago,
+        tipo_pago:tipo_pago,
         comprobante:comprobante,
         //fecha:moment(fecha).format("YYYY-MM-DD"),
         mora:mora,
@@ -126,7 +132,7 @@ setFilterPago(datosPago.res)
           swal("Abono","Ingresdo exitosamente","success");
           limpiar();
           ConsultarCuenta();
-          ConsultaAbono();
+          ConsultaAbono(true);
         }else{
           swal("Abono","No se pudo Ingresar, verifique los datos","warning");
         }
@@ -138,7 +144,7 @@ setFilterPago(datosPago.res)
         if(Abono.message === "Success"){
           swal("Abono", "Eliminado con exíto","success")
           ConsultarCuenta();
-          ConsultaAbono()
+          ConsultaAbono(false)
         }else{
           swal("Abono","No se pudo eliminar","warning");
         }
@@ -154,8 +160,8 @@ setFilterPago(datosPago.res)
     const AbrirActualizar=(datos,e)=>{
      let TipoActual=ObtenerTipoPago(tipoPago,datos.tipo_pago)
      setBuscarTipoPago(TipoActual.nombre);
-
-setAbono(datos.idabono)
+setCuentaSeleccionada(datos)
+setIdAbono(datos.idabono)
 setIdCuenta(datos.idcuenta);
 setIdEmpleado(datos.idempleado);
 setConcepto(datos.concepto);
@@ -177,7 +183,7 @@ var myInput = document.getElementById("exampleModal");
       let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
       setbuscar(buscarTexto);
       
-      setdatos(encontrado.filter(function(item){
+      setDatosAbono(filterAbono.filter(function(item){
           return   item.concepto.toLowerCase().includes(text)|| item.comprobante.toLowerCase().includes(text) ;   
         }).map(function({idcuenta, idempleado, concepto, monto,tipo_pago,comprobante,mora, estado}){
           return{idcuenta, idempleado, concepto, monto,tipo_pago,comprobante,mora, estado}
@@ -200,24 +206,113 @@ var myInput = document.getElementById("exampleModal");
     let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
     setBuscarTipoPago(buscarTexto);
     
-    setTipoPago(filterTipoPago.filter((item)=>{
-        return   item.nombre.toLowerCase().includes(text) || item.apellido.toLowerCase().includes(text) ;   
-      }).map(({idempleado, nombre, apellido, telefono, estado})=>{
-        return{idempleado, nombre, apellido, telefono, estado}
+    setTipoPago(filterTipoPago.filter((item)=>{ 
+        return   item.nombre.toLowerCase().includes(text) ;   
+      }).map(({idtipopago, nombre})=>{
+        return{idtipopago, nombre}
       })
      );
     
       }
-
+      const BusquedaCuenta =(buscarTexto)=>{
+        setBuscarCuenta(buscarTexto);
+        let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
+        setBuscarCuenta(buscarTexto);
+        
+        setdatos(encontrado.filter(function(item){
+            return   item.estado.toLowerCase().includes(text) ;   
+          }).map(function({idcuenta, idcliente, idplan, prox_pago, estado}){
+            return{idcuenta, idcliente, idplan, prox_pago, estado}
+          })
+         );
+        
+          }
+     const ItemSeleccionado = (item) => {
+       setIdCuenta(item.idcuenta)
+      setCuentaSeleccionada(item)
      
+      console.log("numero de la cuenta "+ CuentaSeleccionada.idcuenta);
+      }
+
     return(
-        <div>
-            <div className="mb-2">   
-            <h5 className="modal-title">Cuenta</h5></div>
+        <div className='overflow-scroll'>
+            <div >   
+            <h5 className="modal-title">Abono</h5>
+            </div>
+            <div className="form-outline mb-4 ">
+                <label className="form-label" htmlFor="form1Example1" >Seleccionar cuenta</label>
+                <div className='dropdown_table' onClick={()=>setOpen(!open)}>
+                <div className='input-group mb-2 '>
+                <input type='text' 
+                className='form-control'
+                placeholder='Buscar Cuenta...' 
+                value={buscarCuenta}
+                onChange={(e)=>{BusquedaCuenta(e.target.value)}}
+                />
+                {
+                open ? <i className="bi bi-caret-up-fill input-group-text"></i> : <i className="bi bi-caret-down-fill input-group-text"></i>
+                }
+                </div>
+                <div className={open ? 'open_table' : 'options_table'}>
+                  
+<div className="div-table">
+<div className="table-wrap">
+  
+<table className="table-item ">
+  <thead >
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Plan</th>
+            <th>Apertura</th> 
+            <th>Monto</th>
+            <th>Abonado</th>
+            <th>Mora</th>  
+            <th>Proximo dia de pago</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+       <tbody>
+      { datos ?
+           datos.map((item,index) =>(
+            <tr key={index}  onClick={()=>{ItemSeleccionado(item)}}>
+               
+               <td>{item.idcuenta}</td>
+               <td>{item.idcliente}</td>
+               <td>{item.idplan}</td>  
+               <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
+               <td>{item.idplan}</td>
+               <td>{Quetzal(item.totalabono)}</td>  
+               <td>{Quetzal(item.totalmora)}</td>
+               <td>{moment(item.prox_pago).format("DD/MM/YYYY")}</td>
+             
+               {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:
+               <td ><p className="noactivo">{item.estado}</p></td>
+                }
+
+
+             </tr>
+           )) 
+           : null
+           
+      
+           }
+      
+       </tbody>
+      </table>
+      </div>
+
+  
+        </div>
+                
+              </div>
+    </div>
+      <h6>Pagos de la cuenta de: {CuentaSeleccionada && CuentaSeleccionada.idcuenta}</h6>
+      </div>
             <SearchBar
             onChange={Busqueda} 
             value={buscar} 
-            placeholder="Buscar Cuenta..."  
+            placeholder="Buscar Abono..."  
             data_bs_toggle="modal"
             data_bs_target="#exampleModal"
             onClick={AbrirIngreso}
@@ -251,9 +346,13 @@ var myInput = document.getElementById("exampleModal");
 
   </div>
   <div className="form-outline mb-4">
-       <label className="form-label" htmlFor="form1Example1" >Monto</label>
-        <input type="text" id="form1Example1" className="form-control" value={monto}  onChange={(e) => setMonto(e.target.value)} />
-
+  <label className="form-label" htmlFor="form1Example1" >Monto</label>
+      <div className='input-group'>
+          <span className="input-group-text">Q</span>
+          <input type="text" id="form1Example1" className="form-control" value={monto}  onChange={(e) => setMonto(e.target.value)} />
+          <span className="input-group-text">.00</span>
+      </div>
+       
   </div>
 
   <div className="form-outline mb-4">
@@ -276,11 +375,12 @@ var myInput = document.getElementById("exampleModal");
         <input type="text" id="form1Example1" className="form-control" value={comprobante}  onChange={(e) => setComprobante(e.target.value)} />
 
   </div>
-  <div className="form-outline mb-4">
-       <label className="form-label" htmlFor="form1Example1" >Mora</label>
-        <input type="text" id="form1Example1" className="form-control" value={mora}  onChange={(e) => setMora(e.target.value)} />
-
-  </div>
+  <label className="form-label" htmlFor="form1Example1" >Mora</label>
+      <div className='input-group'>
+          <span className="input-group-text">Q</span>
+          <input type="text" id="form1Example1" className="form-control" value={mora}  onChange={(e) => setMora(e.target.value)} />
+          <span className="input-group-text">.00</span>
+      </div>
 
   
   <div className="form-outline mb-4 center">
@@ -326,8 +426,8 @@ var myInput = document.getElementById("exampleModal");
           </tr>
         </thead>
        <tbody>
-      { abono ?
-           abono.map((item,index) =>(
+      { datosAbono ?
+           datosAbono.map((item,index) =>(
             <tr key={index} >
                
                <td>{item.idabono}</td>
@@ -339,7 +439,7 @@ var myInput = document.getElementById("exampleModal");
                <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
                <td>{Quetzal(item.mora)}</td>  
              
-               {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:
+               {item.estado === "Cancelado" ? <td ><p className="activo">{item.estado}</p></td>:
                <td ><p className="noactivo">{item.estado}</p></td>
                 }
                

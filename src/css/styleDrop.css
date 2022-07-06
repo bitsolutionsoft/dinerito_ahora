@@ -1,14 +1,14 @@
 @import url('../css/color.css');
-.dropdown_s {
+.dropdown_input {
     position: relative;
     cursor: default;
   }
   
- .options {
+ .options_input {
     display: none;
   }
   
-.open {
+.open_input {
     display: block;
     background-color: var(--primary);
     overflow-y: scroll;
@@ -24,7 +24,7 @@
     -webkit-overflow-scrolling: touch;
   }
   
-.option {
+.option_input {
     box-sizing: border-box;
     color: rgba(51, 51, 51, 0.8);
     cursor: pointer;
@@ -33,8 +33,8 @@
     
   }
   
-  .option.selected,
-  .option:hover {
+  .option_input.selected,
+  .option_input:hover {
     background-color: var(--acent);
     color: #333;
   }

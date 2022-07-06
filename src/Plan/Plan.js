@@ -173,14 +173,14 @@ var myInput = document.getElementById("exampleModal");
       <div className='input-group'>
           <span className="input-group-text">Q</span>
           <input type="text" id="form1Example1" className="form-control" value={monto}  onChange={(e) => setMonto(e.target.value)} />
-          <span class="input-group-text">.00</span>
+          <span className="input-group-text">.00</span>
       </div>
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Interes</label>
       <div className='input-group'>
         <input type="text" id="form1Example1" className="form-control" value={interes}  onChange={(e) => setInteres(e.target.value)} />
-        <span class="input-group-text">%</span>
+        <span classname="input-group-text">%</span>
       </div>
       
 
