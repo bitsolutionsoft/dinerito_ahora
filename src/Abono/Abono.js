@@ -235,8 +235,8 @@ var myInput = document.getElementById("exampleModal");
       }
 
     return(
-        <div className='overflow-scroll'>
-            <div >   
+        <div className=' className="container-fluid vh-100"'>
+            <div className='mt-0'>   
             <h5 className="modal-title">Abono</h5>
             </div>
             <div className="form-outline mb-4 ">

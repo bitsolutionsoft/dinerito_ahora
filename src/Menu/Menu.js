@@ -112,7 +112,7 @@ const acceso = (modulo) => {
 <div className="container-fluid vh-100">
     
         <div className="row flex-nowrap ">
-            <div className="col-auto col-xs-auto  col-md-1 col-xl-2 px-sm-2 px-0 nav-lateral max-vh-100 ">
+            <div className="col-auto col-sm-auto  col-md-1 col-xl-2 px-sm-2 px-0 nav-lateral max-vh-100 ">
                 <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2  min-vh-100">
                     <p    className="d-flex align-items-center pb-3 mb-md-0 me-md-auto  text-decoration-none">
                         <span className="fs-5 d-none d-none d-md-none d-xl-inline  text-center">{Nombre}</span>
@@ -181,7 +181,7 @@ const acceso = (modulo) => {
                 </div>
             </div>
             
-            <div className="col py-3 max-vh-100 overflow-scroll">
+            <div className="col  max-vh-100 overflow-auto div-center">
             <ColocarContent  /> 
             </div>
         </div>
