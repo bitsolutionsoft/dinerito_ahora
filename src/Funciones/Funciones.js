@@ -13,6 +13,11 @@ const ConvetirClAData=(data)=>{
             return{id:item.idempleado, name:item.nombre+' '+ item.apellido}
         })
         }
+        const ConvetirPagoAData=(data)=>{
+          return data.map((item)=>{
+              return{id:item.idtipopago, name:item.nombre}
+          })
+          }
         const Obtenercliente=(data,id)=>{
           for (let i in data){
             if(data[i].idcliente === id){
@@ -37,5 +42,13 @@ const ConvetirClAData=(data)=>{
             }
              
           }
+          const ObtenerTipoPago=(data,id)=>{
+            for (let i in data){
+              if(data[i].idtipopago === id){
+                  return data[i];
+              }
+            }
+             
+          }
 
-export {ConvetirPlanAData, ConvetirClAData,ConvetirEmpanAData, Obtenercliente,ObtenerPlan,ObtenerEmpleado};
+export {ConvetirPlanAData, ConvetirClAData,ConvetirEmpanAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan,ObtenerEmpleado,ObtenerTipoPago};

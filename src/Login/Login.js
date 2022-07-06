@@ -1,6 +1,6 @@
 import '../css/login.css';
 import md5 from 'md5';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Datos from '../Host/Datos';
 import ls from "local-storage";
 import swal from "sweetalert"
@@ -8,6 +8,7 @@ import swal from "sweetalert"
 function Login(props)  {
     const [user, setuser] = useState("");
     const [password, setpassword] = useState("");
+    
 
     async function loguear() {
       let data = {
@@ -24,6 +25,7 @@ function Login(props)  {
           let d = usuario.res[0];
           console.log(d);
           ls.set("usuario", usuario.res[0]);
+          
           consultarPermiso(d.idempleado);
           swal("Dinerito_Ahora", "Bienvenido", "success");
           props.history.push("/Menu");

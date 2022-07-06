@@ -8,10 +8,16 @@ import Empleado from '../Empleado/Empleado';
 import AlertModel from '../Menu/AlertModel';
 import Cliente  from '../Cliente/Cliente';
 import Cuenta from '../Cuenta/Cuenta';
-
+import Abono  from '../Abono/Abono';
+import Informe from '../Informe/Informe';
+import {ContextUser} from '../Context/Context';
 function Menu(props)  {
     const [screen, setScreen] = useState("");
     const [usuario, setUsuario] =useState("");
+
+    const [currentUser,setCurrentUser] = useState("");
+const [currentCuenta,setCurrentCuenta]=useState("");
+
     const nav_item="nav-item";
     const nav_active="nav-item nav-active";
 
@@ -26,6 +32,7 @@ function Menu(props)  {
   }else{
 
       setUsuario(ls.get("usuario").usuario)
+      setCurrentUser(ls.get("usuario").usuario)
   }
 }
 
@@ -50,37 +57,47 @@ const acceso = (modulo) => {
     function ColocarContent(){
       
          switch (screen) {
-             case 'Plan':
-if(acceso("Plan")){
-                    return <Plan />
-  
-                }else{
+                case 'Plan':
+                    if(acceso("Plan")){
+                        return <Plan />
+                    }else{
                         return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Plan" />
-                      }
+                    }
                
-             case 'Empleado':
-if(acceso("Empleado")){
-                    return <Empleado />
-                  }else{
+                case 'Empleado':
+                    if(acceso("Empleado")){
+                        return <Empleado />
+                    }else{
                         return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Empleado" />;
-                      }
+                    }
                
-                      case 'Cliente':
-if(acceso("Cliente")){
-                    return <Cliente />
-                  }else{
+                case 'Cliente':
+                    if(acceso("Cliente")){
+                        return <Cliente />
+                    }else{
                         return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Cliente" />;
                       }
-                      case 'Cuentas':
-                        if(acceso("Cuentas")){
-                                            return <Cuenta />
-                                          }else{
-                                                return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Cuentas" />;
-                                              }
+                case 'Cuentas':
+                    if(acceso("Cuentas")){
+                         return <Cuenta />
+                    }else{
+                         return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Cuentas" />;
+                    }
+                case 'Abono':
+                    if(acceso("Abono")){
+                      return <Abono />
+                   }else{
+                      return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Abonos" />;
+                   }
+                case 'Informe':
+                    if(acceso("Informe")){
+                      return <Informe />
+                   }else{
+                      return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a Informe" />;
+                   }
                
-             default:  
-
-             return <AlertModel tipo="success" titulo={usuario} msg="Bienvenido a Dinerito Ahora" />;
+                default:  
+                return <AlertModel tipo="success" titulo={usuario} msg="Bienvenido a Dinerito Ahora" />;
             }
            
      }
@@ -91,7 +108,7 @@ if(acceso("Cliente")){
      }
 
     return (
-        
+    <ContextUser.Provider value={{currentUser, setCurrentUser, currentCuenta, setCurrentCuenta}} >
 <div className="container-fluid vh-100">
     
         <div className="row flex-nowrap ">
@@ -140,7 +157,11 @@ if(acceso("Cliente")){
                             <i className="bi bi-postcard" aria-hidden="true"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Cuentas</span>
                             </div>
                         </li>
-
+                        <li onClick={()=>setScreen("Abono")} className={screen === "Cuenta" ? nav_active : nav_item}>
+                            <div    className="align-middle px-0">
+                            <i className="bi bi-wallet2" aria-hidden="true"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Cuentas</span>
+                            </div>
+                        </li>
                       
                         <li onClick={()=>setScreen("Informe")} className={screen === "Informe" ? nav_active : nav_item}>
                         <div    className=" px-0 align-middle">
@@ -164,7 +185,7 @@ if(acceso("Cliente")){
             <ColocarContent  /> 
             </div>
         </div>
-    </div>
+    </div></ContextUser.Provider>   
     
     );
 

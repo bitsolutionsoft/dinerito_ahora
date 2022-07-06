@@ -1,5 +1,5 @@
 
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
 import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
@@ -7,7 +7,7 @@ import {Quetzal} from '../Funciones/Moneda';
 import moment from 'moment';
 import DropDown from '../Component/DropDown';
 import {ConvetirClAData,ConvetirPlanAData, Obtenercliente,ObtenerPlan} from '../Funciones/Funciones';
-
+import {ContextUser} from '../Context/Context';
 
 
 function Cuenta(props)  {
@@ -27,6 +27,9 @@ function Cuenta(props)  {
     const [buscarCl,setBuscarCl] = useState("");
     const [buscarPlan, setBuscarPlan] =useState("");
     const [accion, setAccion] = useState("new");
+
+  //use context
+  //  const {currentUser,setCurrentUser} = useContext(ContextUser);
   
 
     useEffect(()=>{
@@ -49,7 +52,7 @@ const ConsultaCliente = async (reverse) => {
   if(datosCliente!==null){
     let clienteAsc= reverse ? datosCliente.res.reverse() : datosCliente.res;
     setCliente(clienteAsc);
-    setencontrado(clienteAsc);
+    setfilterCliente(clienteAsc);
   }
 }
 const ConsultaPlan = async() => {
@@ -161,6 +164,7 @@ var myInput = document.getElementById("exampleModal");
         }
     
   const AbrirIngreso=(e)=>{
+    limpiar();
     let myInput = document.getElementById("exampleModal");
     e.target.addEventListener("shown.bs.modal", function () {
       myInput.focus();
@@ -184,11 +188,11 @@ var myInput = document.getElementById("exampleModal");
 
       const BusquedaPlan =(e)=>{
         let buscarTexto=e.target.value;
-        setbuscar(buscarTexto);
+        setBuscarPlan(buscarTexto);
         let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
-        setbuscar(buscarTexto);
+        setBuscarPlan(buscarTexto);
         
-        setdatos(encontrado.filter(function(item){
+        setPlan(filterPlan.filter(function(item){
             return   item.estado.toLowerCase().includes(text) ;   
           }).map(function({idplan, monto, interes, plan_dia, estado}){
             return{idplan, monto, interes, plan_dia, estado}
@@ -297,8 +301,8 @@ var myInput = document.getElementById("exampleModal");
             <th>#</th>
             <th>Cliente</th>
             <th>Plan</th>
+            <th>Apertura</th> 
             <th>Monto</th>
-            <th>Apertura</th>
             <th>Abonado</th>
             <th>Mora</th>  
             <th>Proximo dia de pago</th>
@@ -310,13 +314,13 @@ var myInput = document.getElementById("exampleModal");
        <tbody>
       { datos ?
            datos.map((item,index) =>(
-            <tr key={index}>
+            <tr key={index} >
                
                <td>{item.idcuenta}</td>
                <td>{item.idcliente}</td>
                <td>{item.idplan}</td>  
-               <td>{item.idplan}</td>
                <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
+               <td>{item.idplan}</td>
                <td>{Quetzal(item.totalabono)}</td>  
                <td>{Quetzal(item.totalmora)}</td>
                <td>{moment(item.prox_pago).format("DD/MM/YYYY")}</td>

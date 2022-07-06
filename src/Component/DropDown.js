@@ -11,22 +11,19 @@ function DropDown( props) {
     onClick={()=>setOpen(!open)}
     >
         <div className='input-group mb-2 '>
-
                 <input type='text' 
                 className='form-control'
                 placeholder={open ? 'Buscar...' : 'Seleccionar...'}
                 value={props.value}
                 onChange={props.onChange}
                 />
-            {
+                {
                 open ? <i className="bi bi-caret-up-fill input-group-text"></i> : <i className="bi bi-caret-down-fill input-group-text"></i>
                 }
-           
-
         </div>
         <div className={open ? 'open' : 'options'}>
             {props.dato ? props.dato.map((item,index)=>(
-                    <div key={index} className='option' onClick={()=>{
+                    <div key={index} className={item.id === props.selected ? 'option selected': 'option'} onClick={()=>{
                         props.setValue(item.name) 
                         props.setSelected(item.id)}}>{item.name}</div>
                 ))

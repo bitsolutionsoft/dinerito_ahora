@@ -1,13 +1,11 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import 'font-awesome/css/font-awesome.min.css';
+
 import { Chart, LineController, LineElement, PointElement, LinearScale, Title,CategoryScale } from 'chart.js'
-import DataInforme from "./DataInforme";
-import DataDetalle from "../Venta/DataDetalle";
+
+import Datos from "../Host/Datos";
 import React, { useState,useEffect } from 'react';
 import moment from "moment";
 import swal from "sweetalert";
-import '../css/estado.css'
+import '../css/estilo.css'
 
 
 function Informe(props)  {
@@ -78,7 +76,7 @@ const traducir = (params) => {
 }
 
 const verInforme = (params) => {
-  switch(params){
+/*  switch(params){
     case "Dia":
       ventas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"dia")
       ganacias(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"gdia")
@@ -105,11 +103,11 @@ const verInforme = (params) => {
             break; 
             default:
             break;
-  }
+  }*/
   
 }
 
-
+/*
 async function verDetalle (item,e)  {
  
   let detalle=await DataDetalle.consultarDetalle(item.idfactura);
@@ -181,7 +179,7 @@ graficarDatos(dventas.res);
     }
   }
 
-}
+}*/
   const returnLabel = (datos) => {
     let labels=[];
     datos.map(item=>{
@@ -378,8 +376,8 @@ datosVentas.map((item,index)=>(
   <td>{moment.utc(item.fecha).format("DD/MM/YYYY")}</td>
   <td>{item.cliente}</td> 
   <td>{item.total}</td>
-  <td ><button  type="button" className="btn btn-sm-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>verDetalle(item,e.target)}><i style={{color: "#FABC2A"}} className="fa fa-info-circle gb-primary" aria-hidden="true"></i></button></td>
-</tr>
+ {/** <td ><button  type="button" className="btn btn-sm-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>verDetalle(item,e.target)}><i style={{color: "#FABC2A"}} className="fa fa-info-circle gb-primary" aria-hidden="true"></i></button></td>
+*/} </tr>
 ))
 
 : null
