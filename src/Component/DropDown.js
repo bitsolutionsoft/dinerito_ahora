@@ -16,6 +16,8 @@ function DropDown( props) {
                 placeholder={open ? 'Buscar...' : 'Seleccionar...'}
                 value={props.value}
                 onChange={props.onChange}
+              
+                
                 />
                 {
                 open ? <i className="bi bi-caret-up-fill input-group-text"></i> : <i className="bi bi-caret-down-fill input-group-text"></i>

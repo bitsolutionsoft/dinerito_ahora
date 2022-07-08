@@ -302,7 +302,7 @@ var myInput = document.getElementById("exampleModal");
             <th>Cliente</th>
             <th>Plan</th>
             <th>Apertura</th> 
-            <th>Monto</th>
+           
             <th>Abonado</th>
             <th>Mora</th>  
             <th>Proximo dia de pago</th>
@@ -317,10 +317,10 @@ var myInput = document.getElementById("exampleModal");
             <tr key={index} >
                
                <td>{item.idcuenta}</td>
-               <td>{item.idcliente}</td>
-               <td>{item.idplan}</td>  
+               <td>{item.cliente}</td>
+               <td>{Quetzal(item.monto)}</td>  
                <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
-               <td>{item.idplan}</td>
+             
                <td>{Quetzal(item.totalabono)}</td>  
                <td>{Quetzal(item.totalmora)}</td>
                <td>{moment(item.prox_pago).format("DD/MM/YYYY")}</td>

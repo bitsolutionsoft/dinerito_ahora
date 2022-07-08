@@ -6,9 +6,10 @@ import Datos from '../Host/Datos';
 import {Quetzal} from '../Funciones/Moneda';
 import moment from 'moment';
 import DropDown from '../Component/DropDown';
-import ls, { set } from "local-storage";
+import ls  from "local-storage";
 import {ConvetirClAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan, ObtenerTipoPago} from '../Funciones/Funciones';
 import {ContextUser} from '../Context/Context';
+import AlertModel from '../Menu/AlertModel';
 
 
 function Abono(props)  {
@@ -29,13 +30,14 @@ function Abono(props)  {
     const [tipoPago, setTipoPago] = useState([]);
     const [filterTipoPago, setFilterPago] = useState([]);
     const [buscar, setbuscar] = useState("");
-   
+    const [abonSeleccionado, setAbonoSeleccionado]=useState([]);
     const [buscarTipoPago, setBuscarTipoPago] =useState("");
     const [accion, setAccion] = useState("new");
 //datos de para la desplegar la table
 const [open, setOpen]=useState(false)
 const [buscarCuenta,setBuscarCuenta]=useState("");
 const [CuentaSeleccionada,setCuentaSeleccionada] =useState([]);
+
   //use context
   //  const {currentUser,setCurrentUser} = useContext(ContextUser);
   
@@ -43,7 +45,7 @@ const [CuentaSeleccionada,setCuentaSeleccionada] =useState([]);
     useEffect(()=>{
       
         setIdEmpleado(ls.get("usuario").idempleado)
-       ConsultaAbono(false);
+       ConsultaAbono(false,0);
       CunsultaTipoPago();
       ConsultarCuenta();
      
@@ -57,13 +59,19 @@ const [CuentaSeleccionada,setCuentaSeleccionada] =useState([]);
         setencontrado(datos.res)
       }
     }
-const ConsultaAbono = async (reverse) => {
-  const datos_Abono=await Datos.Consulta("abono");
+const ConsultaAbono = async (reverse, id) => {
+  const datos_Abono= id <= 0 ? await Datos.Consulta("abono") : await Datos.ConsultaAbonoXP(id);
   if(datos_Abono!==null){
+    if(datos_Abono.message==="Success"){
     console.log(datos_Abono.res)
     let abonoAsc= reverse ? datos_Abono.res.reverse() : datos_Abono.res;
     setDatosAbono(abonoAsc);
     setFilterAbono(abonoAsc);
+    }else{
+      setDatosAbono([])
+      setFilterAbono([])
+      swal("Aviso","Esta cuenta no tiene pagos efectuados, seleccione otra!","warning");
+    }
   }
 }
 const CunsultaTipoPago = async() => {
@@ -105,7 +113,7 @@ setFilterPago(datosPago.res)
         if(Abono.message==="Success"){
           swal("Abono","Ingresdo exitosamente","success");
           limpiar();
-          ConsultaAbono(true)
+          ConsultaAbono(true,CuentaSeleccionada.idcuenta)
           ConsultarCuenta();
         }else{
           swal("Abono","No se pudo Ingresar, verifique los datos","warning");
@@ -132,7 +140,7 @@ setFilterPago(datosPago.res)
           swal("Abono","Ingresdo exitosamente","success");
           limpiar();
           ConsultarCuenta();
-          ConsultaAbono(true);
+          ConsultaAbono(true,CuentaSeleccionada.idcuenta);
         }else{
           swal("Abono","No se pudo Ingresar, verifique los datos","warning");
         }
@@ -144,7 +152,7 @@ setFilterPago(datosPago.res)
         if(Abono.message === "Success"){
           swal("Abono", "Eliminado con exíto","success")
           ConsultarCuenta();
-          ConsultaAbono(false)
+          ConsultaAbono(false,CuentaSeleccionada.idcuenta)
         }else{
           swal("Abono","No se pudo eliminar","warning");
         }
@@ -160,7 +168,7 @@ setFilterPago(datosPago.res)
     const AbrirActualizar=(datos,e)=>{
      let TipoActual=ObtenerTipoPago(tipoPago,datos.tipo_pago)
      setBuscarTipoPago(TipoActual.nombre);
-setCuentaSeleccionada(datos)
+//setCuentaSeleccionada(datos)
 setIdAbono(datos.idabono)
 setIdCuenta(datos.idcuenta);
 setIdEmpleado(datos.idempleado);
@@ -200,6 +208,14 @@ var myInput = document.getElementById("exampleModal");
     });
   }
 
+ const AbrirDetalle = (item,e) => { 
+setAbonoSeleccionado(item);
+let myInput = document.getElementById("exampleDetalle");
+e.addEventListener("shown.bs.modal", function () {
+  myInput.focus();
+});
+  } 
+
   const BusquedaPago=(e)=>{
     let buscarTexto=e.target.value;
     setBuscarTipoPago(buscarTexto);
@@ -230,7 +246,7 @@ var myInput = document.getElementById("exampleModal");
      const ItemSeleccionado = (item) => {
        setIdCuenta(item.idcuenta)
       setCuentaSeleccionada(item)
-     
+     ConsultaAbono(true,item.idcuenta);
       console.log("numero de la cuenta "+ CuentaSeleccionada.idcuenta);
       }
 
@@ -239,8 +255,8 @@ var myInput = document.getElementById("exampleModal");
             <div className='mt-0'>   
             <h5 className="modal-title">Abono</h5>
             </div>
-            <div className="form-outline mb-4 ">
-                <label className="form-label" htmlFor="form1Example1" >Seleccionar cuenta</label>
+            <div className="form-outline mb-2 ">
+            <h6>{CuentaSeleccionada.idcuenta !== undefined  ? "Pagos de la cuenta de: "+CuentaSeleccionada.cliente+ ",  Cantidad de: Q"+ CuentaSeleccionada.monto  : 'Seleccione una cuenta...' }</h6>
                 <div className='dropdown_table' onClick={()=>setOpen(!open)}>
                 <div className='input-group mb-2 '>
                 <input type='text' 
@@ -265,7 +281,7 @@ var myInput = document.getElementById("exampleModal");
             <th>Cliente</th>
             <th>Plan</th>
             <th>Apertura</th> 
-            <th>Monto</th>
+        
             <th>Abonado</th>
             <th>Mora</th>  
             <th>Proximo dia de pago</th>
@@ -278,10 +294,9 @@ var myInput = document.getElementById("exampleModal");
             <tr key={index}  onClick={()=>{ItemSeleccionado(item)}}>
                
                <td>{item.idcuenta}</td>
-               <td>{item.idcliente}</td>
-               <td>{item.idplan}</td>  
+               <td>{item.cliente}</td>
+               <td>{Quetzal(item.monto)}</td>  
                <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
-               <td>{item.idplan}</td>
                <td>{Quetzal(item.totalabono)}</td>  
                <td>{Quetzal(item.totalmora)}</td>
                <td>{moment(item.prox_pago).format("DD/MM/YYYY")}</td>
@@ -307,7 +322,7 @@ var myInput = document.getElementById("exampleModal");
                 
               </div>
     </div>
-      <h6>Pagos de la cuenta de: {CuentaSeleccionada && CuentaSeleccionada.idcuenta}</h6>
+    
       </div>
             <SearchBar
             onChange={Busqueda} 
@@ -406,6 +421,40 @@ var myInput = document.getElementById("exampleModal");
   </div>
 </div>
 
+
+<div
+         className="modal fade"
+          id="exampleDetalle"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden={true}
+        >
+  <div className="modal-dialog modal-dialog-scrollable">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title">Detalle del  Pago</h5>
+        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div className="modal-body">
+      
+  <div className="form-outline mb-4">
+       <h6 className="form-label" htmlFor="form1Example1" >Cobrador:</h6>
+  </div>
+  <div className="form-outline mb-4">
+       <label className="form-label" htmlFor="form1Example1" >{abonSeleccionado.empleado}</label>
+  </div>
+  
+ 
+      </div>
+      <div className="modal-footer">
+        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
+       
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div className="div-table">
 <div className="table-wrap">
   
@@ -413,11 +462,10 @@ var myInput = document.getElementById("exampleModal");
   <thead >
           <tr>
             <th>#</th>
-            <th>Empleado</th>
             <th>Concepto</th>
             <th>Monto</th> 
             <th>Tipo de  Pago</th>
-            <th>comprobante</th>
+            <th>Comprobante</th>
             <th>Fecha</th>  
             <th>Mora</th>
             <th>Estado</th>
@@ -426,15 +474,14 @@ var myInput = document.getElementById("exampleModal");
           </tr>
         </thead>
        <tbody>
-      { datosAbono ?
+      { datosAbono.length > 0 ?
            datosAbono.map((item,index) =>(
             <tr key={index} >
                
-               <td>{item.idabono}</td>
-               <td>{item.idempleado}</td>
+               <td>{item.idabono}</td>           
                <td>{item.concepto}</td>  
                <td>{Quetzal(item.monto)}</td>  
-               <td>{item.tipo_pago}</td>  
+               <td>{item.nombrepago}</td>  
                <td>{item.comprobante}</td>  
                <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
                <td>{Quetzal(item.mora)}</td>  
@@ -449,6 +496,7 @@ var myInput = document.getElementById("exampleModal");
    
   </i>
   <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton2">
+  <li  className="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleDetalle" onClick={(e)=>AbrirDetalle(item,e.target)}>Ver detalle</li>
   <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>AbrirActualizar(item,e.target)} >Editar</li>
     <li  className="dropdown-item" onClick={()=>Eliminar(item.idabono)}>Eliminar</li>
       
@@ -461,9 +509,8 @@ var myInput = document.getElementById("exampleModal");
 
              </tr>
            )) 
-           : null
-           
-      
+           : 
+ null
            }
       
        </tbody>

@@ -108,7 +108,7 @@ const acceso = (modulo) => {
      }
 
     return (
-    <ContextUser.Provider value={{currentUser, setCurrentUser, currentCuenta, setCurrentCuenta}} >
+
 <div className="container-fluid vh-100">
     
         <div className="row flex-nowrap ">
@@ -185,7 +185,7 @@ const acceso = (modulo) => {
             <ColocarContent  /> 
             </div>
         </div>
-    </div></ContextUser.Provider>   
+    </div>
     
     );
 

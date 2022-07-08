@@ -45,5 +45,11 @@ class Datos{
         .then((respDatos)=>respDatos)
         .catch((error)=>error);
     }
+    ConsultaAbonoXP(id){
+        return fetch(`${host}abono/viewxp/${id}`,Header.headerGets())
+        .then(response=>response.json())
+        .then((respDatos)=>respDatos)
+        .catch((error)=>error);  
+    }
 }
 export default new Datos();
