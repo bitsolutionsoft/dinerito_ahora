@@ -12,9 +12,9 @@ function Cliente(props)  {
     const [telefono, setTelefono] = useState(""); 
     const [direccion, setDreccion] = useState("");
     const [dpi, setDpi] = useState("");
-    const [f_perfil, setF_perfil] = useState("-"); 
-    const [f_casa, setF_casa] = useState("-");
-    const [f_dpi, setF_dpi] = useState("-");
+    const [f_perfil, setF_perfil] = useState(); 
+    const [f_casa, setF_casa] = useState();
+    const [f_dpi, setF_dpi] = useState();
     const [ubicacion, setUbicacion] = useState(""); 
     const [estado, setEstado] = useState("Activo");
     const [latitudes, setLatitudes] =useState("");
@@ -26,6 +26,11 @@ function Cliente(props)  {
     const [encontrado, setencontrado] = useState([]);
     const [buscar, setbuscar] = useState("");
     const [accion, setAccion] = useState("new");
+
+    const [getIDPI, setGetIDPI] = useState("");
+    const [getICASA, setGetICASA] = useState("");
+    const [getIPERFIL, setGetIPERIL] = useState("");
+    const[prev_perfil, setPrev_perfil]=useState();
     
     //const moneda=2;
     //const Moneda= moneda===1 ? Dolar: Quetzal;
@@ -55,7 +60,58 @@ if('geolocation' in navigator){
         setencontrado(datos.res)
       }
     }
+const SubirImagen =async (file) => { 
+ const datosImg=await Datos.UploadImg(file);
+ if(datosImg !== null) {
+  if(datosImg.message !== "Success"){
+    swal("Aviso","No se pudo cargar la imagen","error");
+  }
+ }
+}
+const Preview = (file,setPreview) => { 
+/*let reader=new FileReader();
+let url=reader.readAsDataURL(file.url)
+reader.onloadend=function(e){
+  setPreview(url)
+}*/
 
+setPreview(file.url)
+/*let url =URL.createObjectURL(file.url);
+setPreview(url);*/
+}
+const VerImagen = async (name,tipo) => { 
+const datosImg=await Datos.ViewImg(name);
+if(datosImg){
+  console.log(datosImg)
+ switch(tipo){
+  case "Dpi":
+    Preview(datosImg,setGetIDPI)
+    //setGetIDPI(URL.createObjectURL(datosImg));
+    break;
+    case "Casa":
+      Preview(datosImg,setGetICASA)
+      //setGetICASA(URL.createObjectURL (datosImg));
+      break;
+      case "Perfil":
+        Preview(datosImg,setGetIPERIL)
+        //setGetIPERIL(URL.createObjectURL (datosImg));
+        break;
+  default:
+    break;
+ }
+}else{
+  swal("Aviso","No se encotro la imgane","warning");
+}
+
+ }
+const BorarImagen = async (name) => { 
+  const datosImg =await Datos.DeleteImg(name);
+  if(datosImg){
+    if(datosImg.message ==="Archivo eliminado"){
+      
+    }
+  }
+ }
     const limpiar=()=>{
       setIdCliente(0);
       setNombre("");
@@ -64,6 +120,10 @@ if('geolocation' in navigator){
       setEstado("Activo");
     }
     const Ingresar=async()=>{
+      const fperfil=f_perfil;
+      const fdpi=f_dpi;
+      const fcasa=f_casa;
+      console.log(fcasa)
       let datos={
         idcliente:0,
         nombre:nombre,
@@ -71,9 +131,9 @@ if('geolocation' in navigator){
         telefono:telefono,
         direccion:direccion,
         dpi:dpi,
-        f_perfil:f_perfil,
-        f_casa:f_casa,
-        f_dpi:f_dpi,
+        f_perfil:f_perfil.name,
+        f_casa:f_casa.name,
+        f_dpi:f_dpi.name,
         ubicacion:ubicacion,
         estado:estado
       }
@@ -81,8 +141,13 @@ if('geolocation' in navigator){
       let cliente=await Datos.NuevoReg("cliente",datos);
       if(cliente !== null){
         if(cliente.message==="Success"){
+          console.log(fperfil)
+          SubirImagen(fperfil);
+          SubirImagen(fcasa);
+          SubirImagen(fdpi);
+
           swal("Cliente","Ingresdo exitosamente","success");
-          limpiar();
+         limpiar();
           ConsultarCliente();
         }else{
           swal("Cliente","No se pudo Ingresar, verifique los datos","warning");
@@ -97,9 +162,9 @@ if('geolocation' in navigator){
         telefono:telefono,
         direccion:direccion,
         dpi:dpi,
-        f_perfil:f_perfil,
-        f_casa:f_casa,
-        f_dpi:f_dpi,
+        f_perfil:f_perfil.name,
+        f_casa:f_casa.name,
+        f_dpi:f_dpi.name,
         ubicacion:ubicacion,
         estado:estado
       }
@@ -115,12 +180,16 @@ if('geolocation' in navigator){
         }
       }
     }
-    const Eliminar=async(id)=>{
-      let cliente=await Datos.BorrarReg("cliente",id);
+    const Eliminar=async(datos)=>{
+      let cliente=await Datos.BorrarReg("cliente",datos.idcliente);
       if(cliente!==null){
         if(cliente.message === "Success"){
           swal("Cliente", "Eliminado con exíto","success")
+          BorarImagen(datos.f_casa);
+          BorarImagen(datos.f_dpi);
+          BorarImagen(datos.f_perfil);
           ConsultarCliente();
+
         }else{
           swal("Cliente","No se pudo eliminar","warning");
         }
@@ -153,9 +222,12 @@ var myInput = document.getElementById("exampleModal");
        let lat=ubica[0];
      
      console.log(log, lat);
-       setF_perfil(datos.f_perfil);
-       setF_casa(datos.f_casa);
-       setF_dpi(datos.f_dpi);
+       //setF_perfil(datos.f_perfil);
+       //setF_casa(datos.f_casa);
+       //setF_dpi(datos.f_dpi);
+       VerImagen(datos.f_perfil,"Perfil");
+       VerImagen(datos.f_casa, "Casa");
+       VerImagen(datos.f_dpi,"Dpi");
        setLinkMap(`https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2292.027386295935!2d${log}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sgt!4v1656994522621!5m2!1ses-419!2sgt`);
         
         var myInput = document.getElementById("exampleDetalle");
@@ -257,20 +329,20 @@ var myInput = document.getElementById("exampleModal");
 
   </div>
   <div className="form-outline mb-4">
-    
-       <label className="form-label" htmlFor="form1Example1" >Foto del Cliente</label>
-       <div class="custom-file">
-    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"/>
-    
+          <label className="form-label" htmlFor="form1Example1" >Foto del Cliente</label>
+        <div className="custom-file"> 
+    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name={f_perfil} onChange={(e)=>{setF_perfil(e.target.files[0]); Preview(e.target.files[0],setPrev_perfil)}} />
+    <img src={prev_perfil} alt="..." height={50} width={50}></img>
   </div>
+
       {/**   <input type="text" id="form1Example1" className="form-control" value={f_perfil}  onChange={(e) => setF_perfil(e.target.value)} />
 */} 
  </div>
 
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Foto  de la casa</label>
-      <div class="custom-file">
-    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"/>
+      <div className="custom-file">
+    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name={f_casa} onChange={(e)=>{setF_casa(e.target.files[0])}}/>
     
   </div>
            {/**  <input type="text" id="form1Example1" className="form-control" value={f_casa}  onChange={(e) => setF_casa(e.target.value)} />
@@ -278,8 +350,8 @@ var myInput = document.getElementById("exampleModal");
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Foto del DPI</label>
-      <div class="custom-file">
-    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"/>
+      <div className="custom-file">
+    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name={f_dpi} onChange={(e)=>{setF_dpi(e.target.files[0])}}/>
     
   </div>
       {/**    <input type="text" id="form1Example1" className="form-control" value={f_dpi}  onChange={(e) => setF_dpi(e.target.value)} />
@@ -341,21 +413,26 @@ var myInput = document.getElementById("exampleModal");
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Cliente</label>
-      <img src="..." class="rounded float-left" alt="..."/>
+      <img src={getIPERFIL}  className="rounded float-left" alt="..." height={50} width={50}></img>
+      {/* <img src={getIPERFIL} class="rounded float-left" alt="..."/>*/}
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Residencia</label>
-      <img src="..." class="rounded float-left" alt="..."/>
+      <img src={getICASA}  className="rounded float-left" alt="..." height={50} width={50}></img>
+       {/*<img src={getICASA} class="rounded float-left" alt="..."/>
+*/}
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >DPi</label>
-      <img src="..." class="rounded float-left" alt="..."/>
+      <img src={getIDPI}  className="rounded float-left" alt="..." height={50} width={50}></img>
+     {/**  <img src={getIDPI} class="rounded float-left" alt="..."/>
+*/}
   </div>
  
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Ubicación</label>
       <div id="map-container-google-3" className="z-depth-1-half map-container-3">
-  <iframe src={linkMap} className="map" width="600" height="450"  allowfullscreen="true" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  <iframe src={linkMap} className="map" width={600} height={450}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
     {/**  
      * 
      *     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d30838.02327407945!2d-91.45531645!3d14.95085335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sgt!4v1656994385292!5m2!1ses-419!2sgt" width="800" height="600" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
