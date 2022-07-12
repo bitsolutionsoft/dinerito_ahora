@@ -67,7 +67,7 @@ class Datos{
          .catch((error)=>console.log("error: "+error))
     }
     ViewImg(name){
-      return  fetch(`${host}img/view/${name}`,{
+      return  fetch(`${host}imgs/view/${name}`,{
             method: 'GET',
             mode:'cors',
             headers:{

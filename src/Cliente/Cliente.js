@@ -4,6 +4,7 @@ import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
 import {Quetzal, Dolar} from '../Funciones/Moneda';
+//import { MapContainer, TileLayer, useMap,Marker,Popup } from 'react-leaflet'
 
 function Cliente(props)  {
     const [idcliente, setIdCliente] = useState("");
@@ -31,27 +32,55 @@ function Cliente(props)  {
     const [getICASA, setGetICASA] = useState("");
     const [getIPERFIL, setGetIPERIL] = useState("");
     const[prev_perfil, setPrev_perfil]=useState();
-    
+const [prev_casa, setPrev_casa ]   =useState();
+const [prev_dpi, setPrev_dpi ]   =useState();
+
     //const moneda=2;
     //const Moneda= moneda===1 ? Dolar: Quetzal;
 
     useEffect(()=>{
       ConsultarCliente();
-      getUbicacion();
+      //getUbicacion();
 
     },[])
     
 const getUbicacion=()=>{
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(MostrarPosicion,MostraError);
+  }else{
+    swal('Aviso', "El navegador no soporta la geolocalización","warning");
+  }
+
+  /*
 if('geolocation' in navigator){
     navigator.geolocation.getCurrentPosition((position)=>{
-        setUbicacion(position.coords.latitude+"/"+position.coords.longitude);
+        setUbicacion(position.coords.latitude+","+position.coords.longitude);
     })
 }else{
     swal("Aviso","Por favor active la ubicación de su dispositivo","Error");
+}*/
 }
+  const MostrarPosicion = (position) => { 
+    setUbicacion(position.coords.latitude+","+position.coords.longitude);
+   }
+const MostraError = (error) => { 
+switch(error.code){
+case  error.PERMISSION_DENIED: 
+swal("Aviso","No se puede obtener la ubicación, por favor habilite los permisos","warning");
+break;
+case error.POSITON_UNAVAILABLE:
+swal("Aviso","La ubicacion no esta disponible","warnind");
+break;
+case error.TIMEOUT:
+swal("Aviso","Se agoto el tiepo para obtener la ubicación","warning");
+break;
+case error.UNKNOWN_ERROR:
+swal("Aviso","Hubo un error al intentar obtener la ubicacion","warning");
+break;
+default:
+break;
 }
-
-
+ }
     const ConsultarCliente=async()=>{
       const datos=await Datos.Consulta("cliente");
       if(datos!==null){
@@ -69,16 +98,18 @@ const SubirImagen =async (file) => {
  }
 }
 const Preview = (file,setPreview) => { 
-/*let reader=new FileReader();
-let url=reader.readAsDataURL(file.url)
-reader.onloadend=function(e){
-  setPreview(url)
-}*/
-
 setPreview(file.url)
-/*let url =URL.createObjectURL(file.url);
-setPreview(url);*/
 }
+
+const GetPreview = (file,setPreview) => { 
+  let reader=new FileReader();
+  reader.onloadend=function(e){
+    setPreview(reader.result)
+  }
+  reader.readAsDataURL(file)
+}
+ 
+  
 const VerImagen = async (name,tipo) => { 
 const datosImg=await Datos.ViewImg(name);
 if(datosImg){
@@ -217,10 +248,11 @@ var myInput = document.getElementById("exampleModal");
     }
 
     const AbrirDetalle=(datos,e)=>{
-       let ubica=datos.ubicacion.split("/");
+       let ubica=datos.ubicacion.split(",");
        let log=ubica[1];
        let lat=ubica[0];
-     
+     setLatitudes(ubica[0]);
+     setLongitudes(ubica[1]);
      console.log(log, lat);
        //setF_perfil(datos.f_perfil);
        //setF_casa(datos.f_casa);
@@ -329,9 +361,9 @@ var myInput = document.getElementById("exampleModal");
 
   </div>
   <div className="form-outline mb-4">
-          <label className="form-label" htmlFor="form1Example1" >Foto del Cliente</label>
+          <label for="formFile" className="form-label" htmlFor="form1Example1" >Foto del Cliente</label>
         <div className="custom-file"> 
-    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name={f_perfil} onChange={(e)=>{setF_perfil(e.target.files[0]); Preview(e.target.files[0],setPrev_perfil)}} />
+    <input type="file" className="form-control"  id="formFile"  aria-describedby="inputGroupFileAddon01" name={f_perfil} onChange={(e)=>{setF_perfil(e.target.files[0]); GetPreview(e.target.files[0],setPrev_perfil)}} />
     <img src={prev_perfil} alt="..." height={50} width={50}></img>
   </div>
 
@@ -340,19 +372,21 @@ var myInput = document.getElementById("exampleModal");
  </div>
 
   <div className="form-outline mb-4">
-      <label className="form-label" htmlFor="form1Example1" >Foto  de la casa</label>
+      <label for="formFile" className="form-label" htmlFor="form1Example1" >Foto  de la casa</label>
       <div className="custom-file">
-    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name={f_casa} onChange={(e)=>{setF_casa(e.target.files[0])}}/>
-    
+    <input type="file" className="form-control"  id="formFile" aria-describedby="inputGroupFileAddon01" name={f_casa} onChange={(e)=>{setF_casa(e.target.files[0]); GetPreview(e.target.files[0],setPrev_casa)}}/>
+    <img src={prev_casa} alt="..." height={50} width={50}></img>
   </div>
            {/**  <input type="text" id="form1Example1" className="form-control" value={f_casa}  onChange={(e) => setF_casa(e.target.value)} />
      */}     
   </div>
+
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Foto del DPI</label>
       <div className="custom-file">
-    <input type="file" className="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name={f_dpi} onChange={(e)=>{setF_dpi(e.target.files[0])}}/>
-    
+        
+    <input type="file" className="form-control"  id="formFile" aria-describedby="inputGroupFileAddon01" name={f_dpi} onChange={(e)=>{setF_dpi(e.target.files[0]); GetPreview(e.target.files[0],setPrev_dpi)}}/>
+    <img src={prev_dpi} alt="..." height={50} width={50}></img>
   </div>
       {/**    <input type="text" id="form1Example1" className="form-control" value={f_dpi}  onChange={(e) => setF_dpi(e.target.value)} />
       */}  
@@ -360,8 +394,12 @@ var myInput = document.getElementById("exampleModal");
   </div>
   <div className="form-outline mb-4">
        <label className="form-label" htmlFor="form1Example1" >Ubicación</label>
-        <input type="text" id="form1Example1" className="form-control" value={ubicacion}  onChange={(e) => setUbicacion(e.target.value)} />
+       <div className='input-group'>
+       <input type="text" class="form-control" placeholder="ej: 14.02,-90.3" disabled={true} aria-label="Recipient's username" aria-describedby="basic-addon2" value={ubicacion}  onChange={(e) => setUbicacion(e.target.value)}/>
+  <span class="input-group-text" id="basic-addon2" onClick={()=>{getUbicacion()}}><i className='bi bi-geo-alt-fill'></i> </span>
+</div>
 
+      
 
   </div>
 
@@ -410,36 +448,54 @@ var myInput = document.getElementById("exampleModal");
          <label className="form-label" htmlFor="form1Example1" hidden= {true} >Codigo </label>   
     <input type="text" id="form1Example1" className="form-control" hidden= {true} value={idcliente} onChange={(e) => setIdCliente(e.target.value)} />
 
+  </div  >
+  <div className='d-flex row gap-2 justify-content-md-center'>
+  <div className="gallery" >
+  <img src={getIPERFIL} className="imgs" alt="..."/>
+  <div class="container">
+    <p className="card-title">Foto del cliente</p> 
   </div>
-  <div className="form-outline mb-4">
-      <label className="form-label" htmlFor="form1Example1" >Cliente</label>
-      <img src={getIPERFIL}  className="rounded float-left" alt="..." height={50} width={50}></img>
-      {/* <img src={getIPERFIL} class="rounded float-left" alt="..."/>*/}
+</div>
+<div className="gallery" >
+  <img src={getICASA} className="imgs" alt="..."/>
+  <div class="container">
+    <p className="card-title">Foto de la residencia</p> 
   </div>
-  <div className="form-outline mb-4">
-      <label className="form-label" htmlFor="form1Example1" >Residencia</label>
-      <img src={getICASA}  className="rounded float-left" alt="..." height={50} width={50}></img>
-       {/*<img src={getICASA} class="rounded float-left" alt="..."/>
-*/}
+</div>
+<div className="gallery">
+  <img src={getIDPI} className="imgs" alt="..."/>
+  <div class="container">
+    <p className="card-title">Foto del DPI</p> 
   </div>
-  <div className="form-outline mb-4">
-      <label className="form-label" htmlFor="form1Example1" >DPi</label>
-      <img src={getIDPI}  className="rounded float-left" alt="..." height={50} width={50}></img>
-     {/**  <img src={getIDPI} class="rounded float-left" alt="..."/>
-*/}
-  </div>
+</div>
+</div>
  
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Ubicación</label>
       <div id="map-container-google-3" className="z-depth-1-half map-container-3">
-  <iframe src={linkMap} className="map" width={600} height={450}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
-    {/**  
+  <iframe src={linkMap} className="map" width={450} height={350}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+  
+  </div>
+      {/**    <MapContainer center={[longitudes, latitudes]} zoom={13} scrollWheelZoom={true}>
+  <TileLayer
+    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  />
+  <Marker position={[longitudes, latitudes]}>
+    <Popup>
+      A pretty CSS3 popup. <br /> Easily customizable.
+    </Popup>
+  </Marker>
+</MapContainer>
+      <div id="map-container-google-3" className="z-depth-1-half map-container-3">
+  <iframe src={linkMap} className="map" width={450} height={350}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+  
      * 
      *     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d30838.02327407945!2d-91.45531645!3d14.95085335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sgt!4v1656994385292!5m2!1ses-419!2sgt" width="800" height="600" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   <iframe src="https://maps.google.com/maps?q=warsaw&t=k&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
     style="border:0" allowfullscreen></iframe>
-    */} 
-</div>
+    
+</div>*/} 
   </div>
  
       </div>

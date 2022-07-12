@@ -442,3 +442,26 @@ background-color: var(--acent);
   background-color: var(--acent);
   color: #333;
 }
+
+div.gallery {
+  padding: 5px;
+  width: 210px;
+  height: 220px;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+div.gallery:hover {
+  box-shadow: 0 4px 8px 0 rgba(172, 56, 250, 0.2), 0 6px 20px 0 rgba(172, 56, 250, 0.19);
+}
+
+.imgs {
+  width: 200px;
+  height: 180px;
+  
+}
+
+div.desc {
+  padding: 8px;
+ 
+}
