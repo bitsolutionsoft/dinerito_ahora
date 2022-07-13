@@ -4,6 +4,7 @@ import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
 import {Quetzal, Dolar} from '../Funciones/Moneda';
+
 //import { MapContainer, TileLayer, useMap,Marker,Popup } from 'react-leaflet'
 
 function Cliente(props)  {
@@ -45,20 +46,40 @@ const [prev_dpi, setPrev_dpi ]   =useState();
     },[])
     
 const getUbicacion=()=>{
+/*
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(MostrarPosicion,MostraError);
   }else{
     swal('Aviso', "El navegador no soporta la geolocalización","warning");
   }
+*/
+navigator.permissions.query({name:'geolocation'}).then(function(result) {
+  
+  if (result.state == 'granted') {
+    navigator.geolocation.getCurrentPosition(MostrarPosicion,MostraError);
 
-  /*
-if('geolocation' in navigator){
-    navigator.geolocation.getCurrentPosition((position)=>{
-        setUbicacion(position.coords.latitude+","+position.coords.longitude);
-    })
-}else{
-    swal("Aviso","Por favor active la ubicación de su dispositivo","Error");
-}*/
+    report(result.state);
+//    geoBtn.style.display = 'none';
+  } else if (result.state == 'prompt') {
+    report(result.state);
+  //  geoBtn.style.display = 'none';
+    navigator.geolocation.getCurrentPosition(MostrarPosicion,MostraError);
+  } else if (result.state == 'denied') {
+    report(result.state);
+    
+    navigator.geolocation.getCurrentPosition(MostrarPosicion,MostraError);
+    //geoBtn.style.display = 'inline';
+  }
+  result.addEventListener('change', function() {
+    report(result.state);
+  });
+});
+} 
+
+
+
+function report(state) {
+  console.log('Permission ' + state);
 }
   const MostrarPosicion = (position) => { 
     setUbicacion(position.coords.latitude+","+position.coords.longitude);
@@ -292,6 +313,7 @@ var myInput = document.getElementById("exampleModal");
     });
   }
 
+
     return(
         <div>
             <div className="mb-2">   
@@ -472,22 +494,14 @@ var myInput = document.getElementById("exampleModal");
  
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Ubicación</label>
-      <div id="map-container-google-3" className="z-depth-1-half map-container-3">
-  <iframe src={linkMap} className="map" width={450} height={350}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+    
+        <div id="map-container-google-3" className="z-depth-1-half map-container-3">
   
+       
   </div>
-      {/**    <MapContainer center={[longitudes, latitudes]} zoom={13} scrollWheelZoom={true}>
-  <TileLayer
-    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  />
-  <Marker position={[longitudes, latitudes]}>
-    <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
-    </Popup>
-  </Marker>
-</MapContainer>
-      <div id="map-container-google-3" className="z-depth-1-half map-container-3">
+   {/**
+  ------<iframe src={linkMap} className="map" width={450} height={350}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+          <div id="map-container-google-3" className="z-depth-1-half map-container-3">
   <iframe src={linkMap} className="map" width={450} height={350}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
   
      * 

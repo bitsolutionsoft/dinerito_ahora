@@ -3,7 +3,7 @@ import "../css/estilo.css";
 function SearchBar(props) {
   return (
     <div className="row mb-2">
-      <div className="col-9">
+      <div className="col-8">
         <div className="input-group form-group ">
           <div className="input-group-prepend w-100">
             <span
@@ -23,7 +23,7 @@ function SearchBar(props) {
       <div className="col-3">
         <button
           type="button"
-          className="ml-1 btn btn-primary"
+          className="btn btn-primary"
           data-bs-toggle={props.data_bs_toggle}
           data-bs-target={props.data_bs_target}
           onClick={props.onClick}
