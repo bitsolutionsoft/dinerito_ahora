@@ -17,6 +17,8 @@ function Informe(props)  {
 
   const [datosVentas, setdatosVentas] = useState([]);
   const [datosGanacias, setdatosGanacias] = useState([]);
+  const[datosCredito, setDatosCredito] =useState([]);
+  
 
 const [myChart, setmyChart] = useState("")
 
@@ -271,91 +273,180 @@ setmyChart( new Chart(ctx,config));
  
    
   }
-  
+  const abriFecha = (e) => { 
+  let myInput = document.getElementById("exampleFecha");
+  e.target.addEventListener("shown.bs.modal", function () {
+    myInput.focus();
+  });
+}
 
 return(
-    <div className="container-fluid vh-100">
-    <div className="mb-2">   <h5 className="modal-title">Informe</h5></div>
-
-     <div className="row mb-2">
-
-     <div className="col-4"> 
+<div className="container-fluid m-0 p-0 vh-100">
+  <div className="mb-1">   
+    <h5>Informe</h5>
+  </div>
+  <div className='row'>
+      <div className='mb-1 ' >
+          <h6>Informe Por:</h6>
+              <div className="row d-flex"> 
                <div className="form-check form-check-inline">
                <div className="form-check form-check-inline">
                   <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Por Dia"  onClick={(e)=>verInforme("Dia")}/>
-                  <label className="form-check-label" htmlFor="exampleRadios1">Por dia</label>
+                  <label className="form-check-label" htmlFor="exampleRadios1">Día</label>
                </div>
                <div className="form-check form-check-inline">
                  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Por semana"  onClick={(e)=>verInforme("Semana")} />
-                 <label className="form-check-label" htmlFor="exampleRadios2">Por semana</label>
+                 <label className="form-check-label" htmlFor="exampleRadios2">Semana</label>
                </div>
                <div className="form-check form-check-inline">
                  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="Por mes"  onClick={(e)=>verInforme("Mes")}/>
-                 <label className="form-check-label" htmlFor="exampleRadios3">Por mes</label> <br/>
+                 <label className="form-check-label" htmlFor="exampleRadios3">Mes</label> <br/>
                </div> 
-               
+               <div className="form-check form-check-inline">
+                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" data-bs-toggle="modal" data-bs-target="#exampleFecha" onClick={(e)=>abriFecha(e)}/>
+                 <label className="form-check-label" htmlFor="exampleRadios3">Rango de fecha</label> <br/>
+               </div> 
                </div>         
             </div>
 
-
-            <div className="col-8">
-           <div className="row">
-            <div className="col-auto d-flex" >
-  <label  className="me-2" >Fecha inicial</label>
-  <input type="date" className="form-control form-control-sm" value={fechainicio} onChange={(e)=>setfechainicio(moment(e.target.value).format("YYYY-MM-DD"))}/>
-</div>
-<div className="col-auto d-flex">
-  <label htmlFor="exampleFormControlInput1" className="me-2"  >Fecha  final</label>
-  <input type="date"  id="exampleFormControlInput1"  className="form-control form-control-sm"  value={fechaFinal} onChange={(e)=>setfechaFinal(moment(e.target.value).format("YYYY-MM-DD"))}/>
-</div>
-<div className="col-auto">
-<button type="button" className="ml-1 btn btn-success" onClick={()=>verInforme("Rango")} >Buscar</button>
-</div> 
-</div>
- </div>            
-<div className="row">
+      </div>
  
+  </div>
 
+  {/**modal tango de fecha */}
+  <div
+          className="modal fade"
+          id="exampleFecha"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden={true}
+        >
+  <div className="modal-dialog modal-dialog-scrollable">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title">Rango de fecha</h5>
+        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div className="modal-body">
+      <div className="input-group input-group-sm  mb-1 " >
+                <span className="input-group-text">Inicio</span>
+                <input type="date" className="form-control form-control-sm" placeholder='01/02/2022' value={fechainicio} onChange={(e)=>setfechainicio(moment(e.target.value).format("YYYY-MM-DD"))}/>
+            </div>
+            <div className="input-group input-group-sm  mb-1 ">
+                <span className="input-group-text">Final</span>
+                <input type="date"  className="form-control form-control-sm"  placeholder='01/02/2022' value={fechaFinal} onChange={(e)=>setfechaFinal(moment(e.target.value).format("YYYY-MM-DD"))}/>
+            </div>
+
+   
+      </div>
+      <div className="modal-footer">
+      <button type="button" className="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      <button type="button" className=" btn btn-sm btn-warning" data-bs-dismiss="modal" onClick={()=>verInforme("Rango")} >Aceptar</button>
+      </div>
+    </div>
+  </div>
 </div>
-    
-</div>
+  {/**final del modal rango de fecha */}
+<div>
+  <h6>Informe de credito</h6>
 <div >
- 
-<table className="table-subitem">
-  <thead >
-          <tr>
-            <th></th>
-            <th>Ventas</th>
-            <th>Inversion</th>
-             <th>Ganacia</th>
-           
-          </tr>
-        </thead>
-       <tbody>
-  {datosGanacias ?
-datosGanacias.map((item,index)=>(
-  <tr  key={index} >  
-  <td></td>          
-  <td>{item.ventas > 0 ? item.ventas.toFixed(2) : null}</td>
-  <td>{item.compra > 0 ? item.compra.toFixed(2) : null}</td> 
-  <td>{item.ganancia > 0 ? item.ganancia.toFixed(2) : null}</td>
-</tr>
-))
+{datosGanacias.length > 0   ?  datosGanacias.map((item,key) =>(
+    <div className='contain-status' key={key}>
+ <div className='div-ventas'>
+<label className='title-card-info'>Credito Nuevo</label>
+<label className='desc-card-info'>{item.ventas > 0 ? item.ventas.toFixed(2) : 0}</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Credito Activo</label>
+<label className='desc-card-info'>{item.compra > 0 ? item.compra.toFixed(2) : 0}</label>
+ </div>
+ <div className='div-inversion'>
 
-: null
-}
-</tbody>
-      </table>
+ <label className='title-card-info'>Credito Moroso</label>
+<label className='desc-card-info'>{item.ganancia > 0 ? item.ganancia.toFixed(2) : 0}</label>
+ </div></div>
+ )) 
+
+ : 
+
+ <div className='contain-status' >
+ <div className='div-ventas'>
+<label className='title-card-info'>Credito Nuevo</label>
+<label className='desc-card-info'>0</label>
+ </div>
+ <div className='div-ganancia'>
+
+ <label className='title-card-info'>Credito Activo</label>
+<label className='desc-card-info'>0</label>
+ </div>
+ <div className='div-inversion'>
+
+ <label className='title-card-info'>Credito Moroso</label>
+<label className='desc-card-info'>0</label>
+ </div>
+ </div>
+ }
   
+</div>
+</div>
+
+<div>
+  <h6>Estado de credito</h6>
+<div >
+{datosGanacias.length > 0   ?  datosGanacias.map((item,key) =>(
+    <div className='contain-status' key={key}>
+ <div className='div-ventas'>
+<label className='title-card-info'>Cantida de credito</label>
+<label className='desc-card-info'>{item.ventas > 0 ? item.ventas.toFixed(2) : 0}</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Cantidad cobrada</label>
+<label className='desc-card-info'>{item.compra > 0 ? item.compra.toFixed(2) : 0}</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Cantidad pediente</label>
+<label className='desc-card-info'>{item.ganancia > 0 ? item.ganancia.toFixed(2) : 0}</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Ganancia </label>
+<label className='desc-card-info'>{item.ganancia > 0 ? item.ganancia.toFixed(2) : 0}</label>
+ </div>
+ </div>
+ )) 
+
+ : 
+
+ <div className='contain-status' >
+ <div className='div-ventas'>
+<label className='title-card-info'>Cantidad de Credito</label>
+<label className='desc-card-info'>0</label>
+ </div>
+ <div className='div-ganancia'>
+
+ <label className='title-card-info'>Cantidada cobrada</label>
+<label className='desc-card-info'>0</label>
+ </div>
+ <div className='div-inversion'>
+
+ <label className='title-card-info'>Cantidad  pediente</label>
+<label className='desc-card-info'>0</label>
+ </div>
+ 
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Ganancia </label>
+<label className='desc-card-info'>0</label>
+ </div>
+ </div>
+ }
+  
+</div>
 </div>
 <div className="row vh-70">
 
-<div className="col-12 col-sm-12 col-md-6 col-lg-6">
-<canvas id="myChart" width="400" height="330"></canvas>
-</div>
-<div className="col-12 col-sm-12 col-md-6 col-lg-6 h-100 overflow-auto ">
+
+<div className=" h-100 ">
   <h5>Historial de ventas</h5>
-  <div className="tblheight">
+  <div className="div-table">
 <div className="table-wrap">
 <table className="table-item">
   <thead >

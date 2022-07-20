@@ -25,8 +25,13 @@ const [currentCuenta,setCurrentCuenta]=useState("");
     useEffect(() => {
        iniciar();
     }, [])
-
+ /*   
+window.onbeforeunload=()=>{
+    return "esta seguro de no refrescar"
+}*/
+    //window.location.reload()
     const iniciar=()=>{
+      
   if(ls.get('usuario')===null){
     props.history.push('./')
   }else{

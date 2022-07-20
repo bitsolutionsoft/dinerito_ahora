@@ -180,7 +180,7 @@ var myInput = document.getElementById("exampleModal");
       <label className="form-label" htmlFor="form1Example1" >Interes</label>
       <div className='input-group'>
         <input type="text" id="form1Example1" className="form-control" value={interes}  onChange={(e) => setInteres(e.target.value)} />
-        <span classname="input-group-text">%</span>
+        <span className="input-group-text" >%</span>
       </div>
       
 

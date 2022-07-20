@@ -417,8 +417,8 @@ var myInput = document.getElementById("exampleModal");
   <div className="form-outline mb-4">
        <label className="form-label" htmlFor="form1Example1" >Ubicación</label>
        <div className='input-group'>
-       <input type="text" class="form-control" placeholder="ej: 14.02,-90.3" disabled={true} aria-label="Recipient's username" aria-describedby="basic-addon2" value={ubicacion}  onChange={(e) => setUbicacion(e.target.value)}/>
-  <span class="input-group-text" id="basic-addon2" onClick={()=>{getUbicacion()}}><i className='bi bi-geo-alt-fill'></i> </span>
+       <input type="text" className="form-control" placeholder="ej: 14.02,-90.3" disabled={true} aria-label="Recipient's username" aria-describedby="basic-addon2" value={ubicacion}  onChange={(e) => setUbicacion(e.target.value)}/>
+  <span className="input-group-text" id="basic-addon2" onClick={()=>{getUbicacion()}}><i className='bi bi-geo-alt-fill'></i> </span>
 </div>
 
       

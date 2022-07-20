@@ -263,10 +263,9 @@ var myInput = document.getElementById("exampleModal");
 
   </div>
   <div className="form-outline mb-4">
-       <label className="form-label" htmlFor="form1Example1" >Proximo dia de Pago</label>
+    <label className="form-label" htmlFor="form1Example1" >Proximo dia de Pago</label>
         <input type="date" id="form1Example1" className="form-control" value={prox_pago}  onChange={(e) => setProx_Pago(e.target.value)} />
-
-  </div>
+     </div>
 
   
   <div className="form-outline mb-4 center">

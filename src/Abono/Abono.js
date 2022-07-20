@@ -251,7 +251,7 @@ e.addEventListener("shown.bs.modal", function () {
       }
 
     return(
-        <div className=' className="container-fluid vh-100"'>
+        <div className='container-fluid m-0 p-0 vh-100'>
             <div className='mt-0'>   
             <h5 className="modal-title">Abono</h5>
             </div>
@@ -454,8 +454,8 @@ e.addEventListener("shown.bs.modal", function () {
   </div>
 </div>
 
-
-<div className="div-table">
+<div className='row vh-70  '>
+<div className="div-table overflow-auto">
 <div className="table-wrap">
   
 <table className="table-item ">
@@ -519,6 +519,7 @@ e.addEventListener("shown.bs.modal", function () {
 
   
         </div>
+</div>
      </div>   
 
     );
