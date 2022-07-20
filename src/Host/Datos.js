@@ -96,5 +96,13 @@ return  fetch(`${host}/img/delete/${name}`,{
           .then(resdatos=>resdatos)
           .catch((error)=>console.log(error))
     }
+
+    consultarInforme(datos){
+    
+        return  fetch(host+`informe`,Headers.headerPostCB(datos))
+                  .then(response => response.json())
+                  .then((responsedatos) => responsedatos)
+                  .catch((error) => error);
+      }
 }
 export default new Datos();
