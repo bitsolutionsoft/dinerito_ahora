@@ -97,9 +97,9 @@ return  fetch(`${host}/img/delete/${name}`,{
           .catch((error)=>console.log(error))
     }
 
-    consultarInforme(datos){
+    consultarInforme(tipo,datos){
     
-        return  fetch(host+`informe`,Headers.headerPostCB(datos))
+        return  fetch(host+`${tipo}/`,Header.headerPostCB(datos))
                   .then(response => response.json())
                   .then((responsedatos) => responsedatos)
                   .catch((error) => error);

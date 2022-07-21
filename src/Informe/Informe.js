@@ -15,7 +15,7 @@ function Informe(props)  {
   const [fechainicio, setfechainicio] = useState("");
   const [fechaFinal, setfechaFinal] = useState("");
 
-  const [datosVentas, setdatosVentas] = useState([]);
+  //const [datosVentas, setdatosVentas] = useState([]);
   const [datosGanacias, setdatosGanacias] = useState([]);
   const[datosCredito, setDatosCredito] =useState([]);
   
@@ -78,34 +78,34 @@ const traducir = (params) => {
 }
 
 const verInforme = (params) => {
-/*  switch(params){
+  switch(params){
     case "Dia":
-      ventas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"dia")
-      ganacias(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"gdia")
-      infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxsem")
+      informeCuenta(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"dia")
+      balance(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"dia")
+     // infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxsem")
       break;
       case "Semana":
-        ventas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"semana")
-        ganacias(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"gsemana")
-        infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxmes")
+        informeCuenta(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"semana")
+        balance(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"semana")
+       // infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxmes")
         break;
         case "Mes":
-          ventas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"mes")
-          ganacias(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"gmes")
-          infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxanio")
+          informeCuenta(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"mes")
+          balance(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"mes")
+         // infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxanio")
           break;
           case "Rango":
             if(fechaFinal !=="" && fechainicio !==""){
-            ventas(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"rango")
-            ganacias(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"grango")
-            infoVentas(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"ventaxran")
+            informeCuenta(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"rango")
+            balance(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"rango")
+           // infoVentas(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"ventaxran")
             }else{
               swal("Aviso","Por favor de seleccionar la fecha inical y fecha final", "success");
             }
             break; 
             default:
             break;
-  }*/
+  }
   
 }
 
@@ -125,37 +125,36 @@ async function verDetalle (item,e)  {
     myInput.focus();
   });
 }
-
-async function ventas(idfac,fecha1,fecha2,accion){
+*/
+const informeCuenta = async(idfac,fecha1,fecha2,accion)=>{
   let informe={
-    "id_fac": idfac,
-    "fech1":fecha1,
-    "fech2":fecha2,
+    "id": idfac,
+    "finicial":fecha1,
+    "ffinal":fecha2,
     "accion":accion,
   }
-  let dventas=await DataInforme.consultarInforme(informe);
-  console.log(dventas)
-  if(dventas!== null){
-    if(dventas.message==="Success"){
- 
-      setdatosVentas(dventas.res)
+  let datainforme=await Datos.consultarInforme("informe",informe);
+  console.log(datainforme)
+  if(datainforme!== null){
+    if(datainforme.message==="Success"){
+      setDatosCredito(datainforme.res)
     }
   }
 
 }
 
-async function ganacias(idfac,fecha1,fecha2,accion){
+const balance=async(idfac,fecha1,fecha2,accion)=>{
   let informe={
-    "id_fac": idfac,
-    "fech1":fecha1,
-    "fech2":fecha2,
+    "id": idfac,
+    "finicial":fecha1,
+    "ffinal":fecha2,
     "accion":accion,
   }
-  let dventas=await DataInforme.consultarInforme(informe);
-  console.log(dventas)
-  if(dventas!== null){
-    if(dventas.message==="Success"){
-      setdatosGanacias(dventas.res)
+  let databalance=await Datos.consultarInforme('balance',informe);
+  console.log(databalance)
+  if(databalance!== null){
+    if(databalance.message==="Success"){
+      setdatosGanacias(databalance.res)
     }
   }
 
@@ -168,7 +167,7 @@ async function infoVentas(idfac,fecha1,fecha2,accion){
     "fech2":fecha2,
     "accion":accion,
   }
-  let dventas=await DataInforme.consultarInforme(informe);
+  let dventas=await Datos.consultarInforme(informe);
   console.log(dventas)
   if(dventas!== null){
     if(dventas.message==="Success"){
@@ -181,7 +180,7 @@ graficarDatos(dventas.res);
     }
   }
 
-}*/
+}
   const returnLabel = (datos) => {
     let labels=[];
     datos.map(item=>{
@@ -292,7 +291,7 @@ return(
                <div className="form-check form-check-inline">
                <div className="form-check form-check-inline">
                   <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Por Dia"  onClick={(e)=>verInforme("Dia")}/>
-                  <label className="form-check-label" htmlFor="exampleRadios1">Día</label>
+                  <label className="form-check-label" htmlFor="exampleRadios1">Hoy</label>
                </div>
                <div className="form-check form-check-inline">
                  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Por semana"  onClick={(e)=>verInforme("Semana")} />
@@ -350,20 +349,28 @@ return(
 <div>
   <h6>Informe de credito</h6>
 <div >
-{datosGanacias.length > 0   ?  datosGanacias.map((item,key) =>(
+{datosCredito.length > 0   ?  datosCredito.map((item,key) =>(
     <div className='contain-status' key={key}>
  <div className='div-ventas'>
 <label className='title-card-info'>Credito Nuevo</label>
-<label className='desc-card-info'>{item.ventas > 0 ? item.ventas.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.nuevo }</label>
+<div class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar" style={{width: item.nuevo}} aria-valuenow={item.nuevo} aria-valuemin="0" aria-valuemax={item.activo}>{item.nuevo +"%"}</div>
+</div>
  </div>
- <div className='div-ganancia'>
+ <div className='div-ventas'>
  <label className='title-card-info'>Credito Activo</label>
-<label className='desc-card-info'>{item.compra > 0 ? item.compra.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.activo }</label>
+<div class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: item.activo}} aria-valuenow={item.activo} aria-valuemin="0" aria-valuemax={item.activo}>{item.activo +"%"}</div>
+</div>
  </div>
- <div className='div-inversion'>
-
+ <div className='div-ventas'>
  <label className='title-card-info'>Credito Moroso</label>
-<label className='desc-card-info'>{item.ganancia > 0 ? item.ganancia.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.moroso}</label>
+<div class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: item.moroso}} aria-valuenow={item.moroso} aria-valuemin="0" aria-valuemax={item.activo}>{item.moroso +"%"}</div>
+</div>
  </div></div>
  )) 
 
@@ -374,12 +381,12 @@ return(
 <label className='title-card-info'>Credito Nuevo</label>
 <label className='desc-card-info'>0</label>
  </div>
- <div className='div-ganancia'>
+ <div className='div-ventas'>
 
  <label className='title-card-info'>Credito Activo</label>
 <label className='desc-card-info'>0</label>
  </div>
- <div className='div-inversion'>
+ <div className='div-ventas'>
 
  <label className='title-card-info'>Credito Moroso</label>
 <label className='desc-card-info'>0</label>
@@ -395,19 +402,19 @@ return(
 <div >
 {datosGanacias.length > 0   ?  datosGanacias.map((item,key) =>(
     <div className='contain-status' key={key}>
- <div className='div-ventas'>
+ <div className='div-inversion'>
 <label className='title-card-info'>Cantida de credito</label>
-<label className='desc-card-info'>{item.ventas > 0 ? item.ventas.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.credito > 0 ? item.cedito.toFixed(2) : 0}</label>
  </div>
- <div className='div-ganancia'>
+ <div className='div-inversion'>
  <label className='title-card-info'>Cantidad cobrada</label>
-<label className='desc-card-info'>{item.compra > 0 ? item.compra.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.cobrado > 0 ? item.cobrado.toFixed(2) : 0}</label>
  </div>
  <div className='div-inversion'>
  <label className='title-card-info'>Cantidad pediente</label>
-<label className='desc-card-info'>{item.ganancia > 0 ? item.ganancia.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.pendiente > 0 ? item.pendiente.toFixed(2) : 0}</label>
  </div>
- <div className='div-ganancia'>
+ <div className='div-inversion'>
  <label className='title-card-info'>Ganancia </label>
 <label className='desc-card-info'>{item.ganancia > 0 ? item.ganancia.toFixed(2) : 0}</label>
  </div>
@@ -417,11 +424,11 @@ return(
  : 
 
  <div className='contain-status' >
- <div className='div-ventas'>
+ <div className='div-inversion'>
 <label className='title-card-info'>Cantidad de Credito</label>
 <label className='desc-card-info'>0</label>
  </div>
- <div className='div-ganancia'>
+ <div className='div-inversion'>
 
  <label className='title-card-info'>Cantidada cobrada</label>
 <label className='desc-card-info'>0</label>
@@ -432,7 +439,7 @@ return(
 <label className='desc-card-info'>0</label>
  </div>
  
- <div className='div-ganancia'>
+ <div className='div-inversion'>
  <label className='title-card-info'>Ganancia </label>
 <label className='desc-card-info'>0</label>
  </div>
@@ -460,8 +467,8 @@ return(
           </tr>
         </thead>
        <tbody>
-  {datosVentas ?
-datosVentas.map((item,index)=>(
+  {datosCredito ?
+datosCredito.map((item,index)=>(
   <tr  key={index} > 
   <td>{item.idfactura}</td>           
   <td>{moment.utc(item.fecha).format("DD/MM/YYYY")}</td>
