@@ -35,6 +35,7 @@ function Cliente(props)  {
     const[prev_perfil, setPrev_perfil]=useState();
 const [prev_casa, setPrev_casa ]   =useState();
 const [prev_dpi, setPrev_dpi ]   =useState();
+const[classTag, setClassTag]=useState("tag_copy")
 
     //const moneda=2;
     //const Moneda= moneda===1 ? Dolar: Quetzal;
@@ -270,8 +271,9 @@ var myInput = document.getElementById("exampleModal");
 
     const AbrirDetalle=(datos,e)=>{
        let ubica=datos.ubicacion.split(",");
+          let lat=ubica[0];
        let log=ubica[1];
-       let lat=ubica[0];
+   
      setLatitudes(ubica[0]);
      setLongitudes(ubica[1]);
      console.log(log, lat);
@@ -281,8 +283,8 @@ var myInput = document.getElementById("exampleModal");
        VerImagen(datos.f_perfil,"Perfil");
        VerImagen(datos.f_casa, "Casa");
        VerImagen(datos.f_dpi,"Dpi");
-       setLinkMap(`https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2292.027386295935!2d${log}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sgt!4v1656994522621!5m2!1ses-419!2sgt`);
-        
+      // setLinkMap(`https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2292.027386295935!2d${log}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sgt!4v1656994522621!5m2!1ses-419!2sgt`);
+     setLinkMap(`https://www.google.es/maps?q=${lat},${log}`);
         var myInput = document.getElementById("exampleDetalle");
 
             e.addEventListener("shown.bs.modal", function () {
@@ -312,7 +314,17 @@ var myInput = document.getElementById("exampleModal");
       myInput.focus();
     });
   }
+const verEtiqueta = (visible) => { 
+  if(visible){
+    setClassTag("tag_copy tag_visible")
+    setTimeout(()=>{
+      setClassTag("tag_copy")
+    },1000);
 
+  }else{
+setClassTag("tag_copy")
+  }
+ }
 
     return(
         <div>
@@ -466,57 +478,51 @@ var myInput = document.getElementById("exampleModal");
         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div className="modal-body">
-      <div className="form-outline mb-4">
-         <label className="form-label" htmlFor="form1Example1" hidden= {true} >Codigo </label>   
-    <input type="text" id="form1Example1" className="form-control" hidden= {true} value={idcliente} onChange={(e) => setIdCliente(e.target.value)} />
-
-  </div  >
+     
+       
   <div className='d-flex row gap-2 justify-content-md-center'>
   <div className="gallery" >
   <img src={getIPERFIL} className="imgs" alt="..."/>
-  <div class="container">
-    <p className="card-title">Foto del cliente</p> 
+  <div class="div_dec">
+    <lable className="card-title">Foto del cliente</lable> 
   </div>
 </div>
 <div className="gallery" >
   <img src={getICASA} className="imgs" alt="..."/>
-  <div class="container">
-    <p className="card-title">Foto de la residencia</p> 
+  <div class="div_dec">
+    <label className="card-title">Foto de la residencia </label> 
   </div>
 </div>
 <div className="gallery">
   <img src={getIDPI} className="imgs" alt="..."/>
-  <div class="container">
-    <p className="card-title">Foto del DPI</p> 
+  <div class="div_dec">
+    <label className="card-title">Foto del DPI</label> 
   </div>
 </div>
+ <div  className="gallery">
+     <label className="form-label" htmlFor="form1Example1" >Ubicación</label>
+     <label className={classTag}>Copiado!</label>
+      <div className='d-flex justify-content-center'>
+      <i className="bi bi-geo-alt-fill icon_location" onClick={()=>{navigator.clipboard.writeText(linkMap);
+      verEtiqueta(true)
+      }}></i> 
+      
+      </div>
+      <div className='container'>
+      <a href={linkMap} >ir a google maps</a> 
+      </div>
+  </div>
 </div>
+
  
-  <div className="form-outline mb-4">
-      <label className="form-label" htmlFor="form1Example1" >Ubicación</label>
-    
-        <div id="map-container-google-3" className="z-depth-1-half map-container-3">
+
   
-       
-  </div>
-   {/**
-  ------<iframe src={linkMap} className="map" width={450} height={350}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
-          <div id="map-container-google-3" className="z-depth-1-half map-container-3">
-  <iframe src={linkMap} className="map" width={450} height={350}  allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
-  
-     * 
-     *     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d30838.02327407945!2d-91.45531645!3d14.95085335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sgt!4v1656994385292!5m2!1ses-419!2sgt" width="800" height="600" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  <iframe src="https://maps.google.com/maps?q=warsaw&t=k&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
-    style="border:0" allowfullscreen></iframe>
-    
-</div>*/} 
-  </div>
  
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
-       
-      </div>
+       </div>
+      
     </div>
   </div>
 </div>

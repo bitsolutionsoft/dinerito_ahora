@@ -6,6 +6,7 @@ import React, { useState,useEffect } from 'react';
 import moment from "moment";
 import swal from "sweetalert";
 import '../css/estilo.css'
+import { Quetzal } from '../Funciones/Moneda';
 
 
 function Informe(props)  {
@@ -404,19 +405,19 @@ return(
     <div className='contain-status' key={key}>
  <div className='div-inversion'>
 <label className='title-card-info'>Cantida de credito</label>
-<label className='desc-card-info'>{item.credito > 0 ? item.cedito.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.credito > 0 ? Quetzal(item.cedito) : 0}</label>
  </div>
  <div className='div-inversion'>
  <label className='title-card-info'>Cantidad cobrada</label>
-<label className='desc-card-info'>{item.cobrado > 0 ? item.cobrado.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.cobrado > 0 ? Quetzal(item.cobrado) : 0}</label>
  </div>
  <div className='div-inversion'>
  <label className='title-card-info'>Cantidad pediente</label>
-<label className='desc-card-info'>{item.pendiente > 0 ? item.pendiente.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.pendiente > 0 ? Quetzal(item.pendiente) : 0}</label>
  </div>
  <div className='div-inversion'>
  <label className='title-card-info'>Ganancia </label>
-<label className='desc-card-info'>{item.ganancia > 0 ? item.ganancia.toFixed(2) : 0}</label>
+<label className='desc-card-info'>{item.ganancia > 0 ? Quetzal(item.ganancia) : 0}</label>
  </div>
  </div>
  )) 
@@ -452,6 +453,7 @@ return(
 
 
 <div className=" h-100 ">
+  
   <h5>Historial de ventas</h5>
   <div className="div-table">
 <div className="table-wrap">
