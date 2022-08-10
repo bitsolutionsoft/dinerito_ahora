@@ -1,3 +1,6 @@
+import moment from "moment"
+import { DiasPasado } from "../Host/Info"
+
 const ConvetirPlanAData=(data)=>{
 return data.map((item,index)=>{
     return {id:item.idplan, name:'Cantidad: '+item.monto+" Interes: "+item.interes+'%'}
@@ -51,4 +54,26 @@ const ConvetirClAData=(data)=>{
              
           }
 
-export {ConvetirPlanAData, ConvetirClAData,ConvetirEmpanAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan,ObtenerEmpleado,ObtenerTipoPago};
+          const AplicarMora=(hoy, fechaPago)=>{
+            let dhoy=moment(hoy).subtract(DiasPasado,'days').format("YYYY-MM-DD").split("-")
+            let fpago=moment(fechaPago).format("YYYY-MM-DD").split("-")
+            console.log(dhoy,fpago)
+            if(dhoy[0] >= fpago[0]){
+              console.log("y")
+              if(dhoy[1] >= fpago[1]){
+                console.log("m")
+                if(dhoy[2] >= fpago[2]){
+                  console.log("d")
+                  return true
+                }else{
+                  return false
+                }
+              }else{
+                return false
+              }
+            }else{
+              return false
+            }
+          }
+
+export {ConvetirPlanAData, ConvetirClAData,ConvetirEmpanAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan,ObtenerEmpleado,ObtenerTipoPago,AplicarMora};

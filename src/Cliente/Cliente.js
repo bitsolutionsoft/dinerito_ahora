@@ -47,13 +47,7 @@ const[classTag, setClassTag]=useState("tag_copy")
     },[])
     
 const getUbicacion=()=>{
-/*
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(MostrarPosicion,MostraError);
-  }else{
-    swal('Aviso', "El navegador no soporta la geolocalización","warning");
-  }
-*/
+
 navigator.permissions.query({name:'geolocation'}).then(function(result) {
   
   if (result.state == 'granted') {
@@ -325,6 +319,7 @@ const verEtiqueta = (visible) => {
 setClassTag("tag_copy")
   }
  }
+
 
     return(
         <div>

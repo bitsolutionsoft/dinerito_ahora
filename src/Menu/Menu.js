@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../css/estilo.css'
 import ls from "local-storage";
 import {Nombre} from '../Host/Info';
@@ -10,14 +10,15 @@ import Cliente  from '../Cliente/Cliente';
 import Cuenta from '../Cuenta/Cuenta';
 import Abono  from '../Abono/Abono';
 import Informe from '../Informe/Informe';
-import {ContextUser} from '../Context/Context';
+import { DataContext } from '../Context/Context';
+
 function Menu(props)  {
     const [screen, setScreen] = useState("");
     const [usuario, setUsuario] =useState("");
 
     const [currentUser,setCurrentUser] = useState("");
-const [currentCuenta,setCurrentCuenta]=useState("");
-
+    const [currentCuenta,setCurrentCuenta]=useState("");
+const {setIsLogin} =useContext(DataContext);
     const nav_item="nav-item";
     const nav_active="nav-item nav-active";
 
@@ -25,15 +26,11 @@ const [currentCuenta,setCurrentCuenta]=useState("");
     useEffect(() => {
        iniciar();
     }, [])
- /*   
-window.onbeforeunload=()=>{
-    return "esta seguro de no refrescar"
-}*/
-    //window.location.reload()
     const iniciar=()=>{
       
   if(ls.get('usuario')===null){
-    props.history.push('./')
+   // props.history.push('./')
+   setIsLogin(false)
   }else{
 
       setUsuario(ls.get("usuario").usuario)
@@ -109,7 +106,8 @@ const acceso = (modulo) => {
     
      const cerrarSesion=()=>{
          ls.clear();
-         props.history.push('./');
+        // props.history.push('./');
+        setIsLogin(false)
      }
 
     return (

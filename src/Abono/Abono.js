@@ -4,12 +4,15 @@ import swal from "sweetalert";
 import SearchBar from '../Component/SearchBar';
 import Datos from '../Host/Datos';
 import {Quetzal} from '../Funciones/Moneda';
+
 import moment from 'moment';
+
 import DropDown from '../Component/DropDown';
-import ls  from "local-storage";
-import {ConvetirClAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan, ObtenerTipoPago} from '../Funciones/Funciones';
-import {ContextUser} from '../Context/Context';
-import AlertModel from '../Menu/AlertModel';
+import ls, { set }  from "local-storage";
+import {AplicarMora, ConvetirClAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan, ObtenerTipoPago} from '../Funciones/Funciones';
+import { DataContext } from '../Context/Context';
+import { DiasPasado, Mora } from '../Host/Info';
+
 
 
 function Abono(props)  {
@@ -21,8 +24,10 @@ function Abono(props)  {
     const [tipo_pago, setTipo_pago]=useState("");
     const [comprobante, setComprobante]=useState("");
     const [mora, setMora]=useState("");
+    const [fechaPago, setFechaPago]= useState("");
     const [estado, setEstado] = useState("Cancelado");
-    
+    const [prox_pago, setProx_Pago] =useState("");
+    const [prox_monto, setProx_monto] =useState("")
     const [datos, setdatos] = useState([]);  
     const [encontrado, setencontrado] = useState([]);
     const [datosAbono, setDatosAbono] = useState([]);
@@ -33,13 +38,13 @@ function Abono(props)  {
     const [abonSeleccionado, setAbonoSeleccionado]=useState([]);
     const [buscarTipoPago, setBuscarTipoPago] =useState("");
     const [accion, setAccion] = useState("new");
+    const [isDisabled, setIsDisabled]=useState(false);
 //datos de para la desplegar la table
 const [open, setOpen]=useState(false)
 const [buscarCuenta,setBuscarCuenta]=useState("");
 const [CuentaSeleccionada,setCuentaSeleccionada] =useState([]);
 
-  //use context
-  //  const {currentUser,setCurrentUser} = useContext(ContextUser);
+
   
 
     useEffect(()=>{
@@ -91,6 +96,7 @@ setFilterPago(datosPago.res)
     setTipo_pago("")
     setComprobante("")
       setBuscarTipoPago("")
+      setMora("")
       setEstado("Cancelado");
       setAccion("new")
     }
@@ -105,6 +111,7 @@ setFilterPago(datosPago.res)
         comprobante:comprobante,
         //fecha:moment(fecha).format("YYYY-MM-DD"),
         mora:mora,
+        prox_pago:prox_pago !=="" ? moment(prox_pago).format("YYYY-MM-DD h:mm:ss") : moment(new Date()).format("YYYY-MM-DD h:mm:ss"),
         estado:estado
       }
    
@@ -112,14 +119,45 @@ setFilterPago(datosPago.res)
       if(Abono !== null){
         if(Abono.message==="Success"){
           swal("Abono","Ingresdo exitosamente","success");
+            siguientePago(datos)
           limpiar();
           ConsultaAbono(true,CuentaSeleccionada.idcuenta)
           ConsultarCuenta();
+        
         }else{
           swal("Abono","No se pudo Ingresar, verifique los datos","warning");
         }
       }
     }
+
+
+    const siguientePago = async(datos) => {
+    if(isDisabled){
+      let dats={
+        idabono:0,
+        idcuenta: CuentaSeleccionada.idcuenta,
+        idempleado:idempleado,
+        concepto:moment(datos.prox_pago).format("MMMM"),
+        monto:prox_monto !=="" ? prox_monto : datos.monto,
+        tipo_pago:1,
+        comprobante:"-",
+        //fecha:moment(fecha).format("YYYY-MM-DD"),
+        mora:"0",
+        prox_pago:datos.prox_pago,
+        estado:datos.estado
+      }
+      let siguiente= await Datos.NuevoReg("abono/prox",dats);
+      if(siguiente !== null){
+        if(siguiente.message==="Success"){
+          setIsDisabled(false)
+          setProx_Pago("")
+          ConsultaAbono(true,CuentaSeleccionada.idcuenta)
+        }else{
+                swal("Abono","No se pudo Ingresar fecha del siguiente pago, verifique los datos","warning");
+        }
+      }
+    }
+     }
     const Actualizar=async()=>{
       let datos={
         idabono:idabono,
@@ -129,8 +167,8 @@ setFilterPago(datosPago.res)
         monto:monto,
         tipo_pago:tipo_pago,
         comprobante:comprobante,
-        //fecha:moment(fecha).format("YYYY-MM-DD"),
         mora:mora,
+        prox_pago:prox_pago !=="" ? moment(prox_pago).format("YYYY-MM-DD h:mm:ss") : moment(new Date()).format("YYYY-MM-DD h:mm:ss"),
         estado:estado
       }
       console.log(datos);
@@ -138,6 +176,7 @@ setFilterPago(datosPago.res)
       if(Abono !== null){
         if(Abono.message==="Success"){
           swal("Abono","Ingresdo exitosamente","success");
+          siguientePago(datos)
           limpiar();
           ConsultarCuenta();
           ConsultaAbono(true,CuentaSeleccionada.idcuenta);
@@ -166,17 +205,25 @@ setFilterPago(datosPago.res)
       }
     }
     const AbrirActualizar=(datos,e)=>{
-     let TipoActual=ObtenerTipoPago(tipoPago,datos.tipo_pago)
+    let TipoActual=ObtenerTipoPago(tipoPago,datos.tipo_pago)
      setBuscarTipoPago(TipoActual.nombre);
-//setCuentaSeleccionada(datos)
+setCuentaSeleccionada(datos)
 setIdAbono(datos.idabono)
 setIdCuenta(datos.idcuenta);
 setIdEmpleado(datos.idempleado);
 setConcepto(datos.concepto);
 setMonto(datos.monto);
+setFechaPago(datos.fecha)
 setTipo_pago(datos.tipo_pago);
 setComprobante(datos.comprobante);
-setMora(datos.mora)
+
+
+if(AplicarMora(new Date(), datos.fecha)){
+setMora(Mora)
+}else{
+setMora(datos.mora !==null ? datos.mora : 0 )
+}
+
 setEstado(datos.estado)
 setAccion("update");
 
@@ -202,11 +249,19 @@ var myInput = document.getElementById("exampleModal");
     
   const AbrirIngreso=(e)=>{
     limpiar();
-    let myInput = document.getElementById("exampleModal");
+    if(CuentaSeleccionada.length <=0){
+      swal("Aviso","Para poder agregar un abono, primero seleccione a la cuenta a la que desee abonar!","warning")
+    
+  }
+    if(CuentaSeleccionada.length >= 1){
+      let myInput = document.getElementById("exampleModal");
     e.target.addEventListener("shown.bs.modal", function () {
       myInput.focus();
     });
+    }
+   
   }
+
 
  const AbrirDetalle = (item,e) => { 
 setAbonoSeleccionado(item);
@@ -244,7 +299,8 @@ e.addEventListener("shown.bs.modal", function () {
         
           }
      const ItemSeleccionado = (item) => {
-       setIdCuenta(item.idcuenta)
+    
+      setIdCuenta(item.idcuenta)
       setCuentaSeleccionada(item)
      ConsultaAbono(true,item.idcuenta);
       console.log("numero de la cuenta "+ CuentaSeleccionada.idcuenta);
@@ -284,7 +340,6 @@ e.addEventListener("shown.bs.modal", function () {
         
             <th>Abonado</th>
             <th>Mora</th>  
-            <th>Proximo dia de pago</th>
             <th>Estado</th>
           </tr>
         </thead>
@@ -299,7 +354,6 @@ e.addEventListener("shown.bs.modal", function () {
                <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
                <td>{Quetzal(item.totalabono)}</td>  
                <td>{Quetzal(item.totalmora)}</td>
-               <td>{moment(item.prox_pago).format("DD/MM/YYYY")}</td>
              
                {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:
                <td ><p className="noactivo">{item.estado}</p></td>
@@ -333,7 +387,7 @@ e.addEventListener("shown.bs.modal", function () {
             onClick={AbrirIngreso}
             />
          
-{/**modal para ingreso de empleado */}
+{/**modal para ingreso de abono */}
 
   <div
           className="modal fade"
@@ -342,6 +396,7 @@ e.addEventListener("shown.bs.modal", function () {
           aria-labelledby="exampleModalLabel"
           aria-hidden={true}
         >
+        
   <div className="modal-dialog modal-dialog-scrollable">
     <div className="modal-content">
       <div className="modal-header">
@@ -364,7 +419,7 @@ e.addEventListener("shown.bs.modal", function () {
   <label className="form-label" htmlFor="form1Example1" >Monto</label>
       <div className='input-group'>
           <span className="input-group-text">Q</span>
-          <input type="text" id="form1Example1" className="form-control" value={monto}  onChange={(e) => setMonto(e.target.value)} />
+          <input type="number" id="form1Example1" className="form-control" value={monto}  onChange={(e) => setMonto(e.target.value)} />
           <span className="input-group-text">.00</span>
       </div>
        
@@ -393,7 +448,7 @@ e.addEventListener("shown.bs.modal", function () {
   <label className="form-label" htmlFor="form1Example1" >Mora</label>
       <div className='input-group'>
           <span className="input-group-text">Q</span>
-          <input type="text" id="form1Example1" className="form-control" value={mora}  onChange={(e) => setMora(e.target.value)} />
+          <input type="number" id="form1Example1" className="form-control" value={mora}  onChange={(e) => setMora(e.target.value)} />
           <span className="input-group-text">.00</span>
       </div>
 
@@ -409,9 +464,33 @@ e.addEventListener("shown.bs.modal", function () {
   <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value={estado} checked={estado === "Atrasado" ? true : false} onChange={() => setEstado("Atrasado")}/>
   <label className="form-check-label" htmlFor="inlineRadio2">Atrasado</label>
   </div>
+  
+<div className="form-check form-check-inline">
+  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value={estado} checked={estado === "Pendiente" ? true : false} onChange={() => setEstado("Pendiente")}/>
+  <label className="form-check-label" htmlFor="inlineRadio2">Pendiente</label>
+  </div>
 </div>
 
   </div>
+  <div className="form-outline mb-4 center">
+       <div className="form-check mb-3">
+       <input className="form-check-input mt-0" type="checkbox" value={isDisabled} checked={isDisabled} onClick={()=>{setIsDisabled(!isDisabled)}}  data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"/>
+       <label   className="form-check-label"  > Agregar siguiente pago </label>
+       </div>
+       <div className="collapse" id="collapseExample">
+ <div className="form-outline mb-3">
+<label className="form-label" htmlFor="form1Example1">Fecha del proximo pago</label>
+  <input disabled={!isDisabled} type="date" aria-label="Text input with checkbox" className="form-control form-control-sm"  placeholder='01/02/2022' value={prox_pago} onChange={(e)=>setProx_Pago(moment(e.target.value).format("YYYY-MM-DD"))}/>
+ 
+</div>
+  
+      
+<div className='form-outline mb-3'>
+<lable className="form-label" htmlFor="form1Examples1">Monto del proximo pago</lable>
+ <input disabled={!isDisabled} type="number" className="form-control form-control-sm"  placeholder='ej.: 10.00' value={prox_monto} onChange={(e)=>setProx_monto(e.target.value)}/>
+</div>
+</div>
+       </div>
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -419,6 +498,8 @@ e.addEventListener("shown.bs.modal", function () {
       </div>
     </div>
   </div>
+
+
 </div>
 
 
@@ -466,7 +547,8 @@ e.addEventListener("shown.bs.modal", function () {
             <th>Monto</th> 
             <th>Tipo de  Pago</th>
             <th>Comprobante</th>
-            <th>Fecha</th>  
+            <th>Fecha Pago</th>  
+            <th>Dia cobrado</th>           
             <th>Mora</th>
             <th>Estado</th>
             
@@ -481,9 +563,10 @@ e.addEventListener("shown.bs.modal", function () {
                <td>{item.idabono}</td>           
                <td>{item.concepto}</td>  
                <td>{Quetzal(item.monto)}</td>  
-               <td>{item.nombrepago}</td>  
+               <td>{item.nombre}</td>  
                <td>{item.comprobante}</td>  
                <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
+               <td>{moment(item.diacobro).format("DD/MM/YYYY")}</td>
                <td>{Quetzal(item.mora)}</td>  
              
                {item.estado === "Cancelado" ? <td ><p className="activo">{item.estado}</p></td>:
