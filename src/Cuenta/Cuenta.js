@@ -444,7 +444,7 @@ const calcularCuota = (cant) => {
   <div className="modal-dialog modal-dialog-scrollable">
     <div className="modal-content">
       <div className="modal-header">
-        <h5 className="modal-title">Calcular la cantidad de pagos</h5>
+        <h5 className="modal-title">Configurar Modo de pagos</h5>
         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div className="modal-body">
@@ -512,7 +512,8 @@ const calcularCuota = (cant) => {
             <th>Cliente</th>
             <th>Plan</th>
             <th>Apertura</th> 
-           
+            <th>Total a cobrar</th>
+            <th>Cant. Pagos</th>
             <th>Abonado</th>
             <th>Mora</th>  
   
@@ -529,8 +530,9 @@ const calcularCuota = (cant) => {
                <td>{item.idcuenta}</td>
                <td>{item.cliente}</td>
                <td>{Quetzal(item.monto)}</td>  
-               <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
-             
+               <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>             
+               <td>{Quetzal(item.totalpago)}</td>  
+               <td>{item.cantpago}</td>
                <td>{Quetzal(item.totalabono)}</td>  
                <td>{Quetzal(item.totalmora)}</td>
 
@@ -550,7 +552,7 @@ const calcularCuota = (cant) => {
     {/** 
     <li  className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModalS" onClick={(e)=>AgregarSiguiente(item,e.target)}>Agregar siguiente pago</li>
    */} 
-   <li  className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModalC" onClick={(e)=>CalcularPagos(item,e.target)}>Agregar Cantidad de pago</li>
+   <li  className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModalC" onClick={(e)=>CalcularPagos(item,e.target)}>Configurar pago</li>
       
    
   </ul>

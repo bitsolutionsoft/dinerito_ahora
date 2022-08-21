@@ -15,7 +15,7 @@ import { DiasPasado, Direccion, Mora,Nombre } from '../Host/Info';
 import logo from '../Img/Logo.jpg';
 
 
-function Abono(props)  {
+function Cobros(props)  {
     const [idabono, setIdAbono] = useState("");
     const [idcuenta, setIdCuenta] = useState("");
     const [idempleado, setIdEmpleado] = useState("");
@@ -432,76 +432,33 @@ const Imprimir = () => {
     return(
         <div className='container-fluid m-0 p-0 vh-100'>
             <div className='mt-0'>   
-            <h5 className="modal-title">Abono</h5>
+            <h5 className="modal-title">Cobros</h5>
             </div>
-            <div className="form-outline mb-2 ">
-            <h6>{CuentaSeleccionada.idcuenta !== undefined  ? "Pagos de la cuenta de: "+CuentaSeleccionada.cliente+ ",  Cantidad de: Q"+ CuentaSeleccionada.monto  : 'Seleccione una cuenta...' }</h6>
-                <div className='dropdown_table' onClick={()=>setOpen(!open)}>
-                <div className='input-group mb-2 '>
-                <input type='text' 
-                className='form-control'
-                placeholder='Buscar Cuenta...' 
-                value={buscarCuenta}
-                onChange={(e)=>{BusquedaCuenta(e.target.value)}}
-                />
-                {
-                open ? <i className="bi bi-caret-up-fill input-group-text"></i> : <i className="bi bi-caret-down-fill input-group-text"></i>
-                }
-                </div>
-                <div className={open ? 'open_table' : 'options_table'}>
-                  
-<div className="div-table">
-<div className="table-wrap">
-  
-<table className="table-item ">
-  <thead >
-          <tr>
-            <th>#</th>
-            <th>Cliente</th>
-            <th>Plan</th>
-            <th>Apertura</th> 
-        
-            <th>Abonado</th>
-            <th>Mora</th>  
-            <th>Estado</th>
-          </tr>
-        </thead>
-       <tbody>
-      { datos ?
-           datos.map((item,index) =>(
-            <tr key={index}  onClick={()=>{ItemSeleccionado(item)}}>
-               
-               <td>{item.idcuenta}</td>
-               <td>{item.cliente}</td>
-               <td>{Quetzal(item.monto)}</td>  
-               <td>{moment(item.fecha).format("DD/MM/YYYY")}</td>
-               <td>{Quetzal(item.totalabono)}</td>  
-               <td>{Quetzal(item.totalmora)}</td>
+            
+  <div className='row'>
+      <div className='mb-1 ' >
+          <h6>Filtrar por:</h6>
+              <div className="row d-flex"> 
+               <div className="form-check form-check-inline">
+               <div className="form-check form-check-inline">
+                  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Pendiente"  onClick={(e)=>Busqueda(e)}/>
+                  <label className="form-check-label" htmlFor="exampleRadios1">Pendiente</label>
+               </div>
+               <div className="form-check form-check-inline">
+                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Cancelado"  onClick={(e)=>Busqueda(e)} />
+                 <label className="form-check-label" htmlFor="exampleRadios2">Cancelado</label>
+               </div>
+               <div className="form-check form-check-inline">
+                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="Atrasado"  onClick={(e)=>Busqueda(e)}/>
+                 <label className="form-check-label" htmlFor="exampleRadios3">Atrasado</label> <br/>
+               </div> 
              
-               {item.estado === "Activo" ? <td ><p className="activo">{item.estado}</p></td>:
-               <td ><p className="noactivo">{item.estado}</p></td>
-                }
+               </div>         
+            </div>
 
-
-             </tr>
-           )) 
-           : null
-           
-      
-           }
-
-      
-       </tbody>
-      </table>
       </div>
-
-  
-        </div>
-                
-              </div>
-    </div>
-    
-      </div>
+ 
+  </div>
             <SearchBar
             onChange={Busqueda} 
             value={buscar} 
@@ -767,7 +724,6 @@ const Imprimir = () => {
     <p className="form-label" htmlFor="form1Example1" >{"cobrado: "+moment(abonSeleccionado.diacobro).format("DD-MM-YYYY h:mm:ss")}</p>
      <p className="form-label" htmlFor="form1Example1" >{"Tipo de pago: "+abonSeleccionado.nombre}</p>
      <p className="form-label" htmlFor="form1Example1" >{"Estado: "+abonSeleccionado.estado}</p>
- 
   </div>
 
   <div className="form-outline mb-4">
@@ -781,6 +737,7 @@ const Imprimir = () => {
     <p className="form-label" htmlFor="form1Example1" >{"Abono: "+Quetzal(abonSeleccionado.monto)}</p>
     <p className="form-label" htmlFor="form1Example1" >{"Mora: "+Quetzal(abonSeleccionado.mora)}</p>
     <p className="form-label" htmlFor="form1Example1" >{"Saldo: "+Quetzal(CuentaSeleccionada.totalpago-CuentaSeleccionada.totalabono)}</p>
+   
     <hr/>
   </div>
   <div className="form-outline mb-4">
@@ -871,5 +828,5 @@ const Imprimir = () => {
 
     );
         }
-    export default Abono;
+    export default Cobros;
     

@@ -40,8 +40,10 @@ opacity: 0.9;
 }
 .activo{
     background-color: var(--succes);
+    color: white;
     text-align:center;
     border-radius:10px;
+    padding: 1px 6px;
     
   }
   .noactivo{
@@ -49,6 +51,14 @@ opacity: 0.9;
     color: white;
     text-align:center;
     border-radius: 10px;  
+    padding: 1px 6px;
+  }
+  .pendiente{
+    background-color: var(--warning);
+    color: white;
+    text-align:center;
+    border-radius: 10px;  
+    padding: 1px 6px;
   }
   
   .nav-lateral{
@@ -268,13 +278,19 @@ font-size: 0.8rem;
 
 }
 /*css para las tarjeta del estado de ventas y ganancias*/
+.secc_info{
+  box-shadow: 0px 0px 0px var(--shadow);
+padding:  8px;
+margin: 8px 0px;
+border-radius: 8px;
+}
 .contain-status{
 width: 100%;
 height: auto;
 display: flex;
 flex-direction: row;
-justify-content: space-between;
 flex-wrap: wrap;
+
 }
 .div-ventas{
   padding: 8px;
@@ -283,6 +299,7 @@ margin: 3px;
 width: 250px;
 background-color: var(--acent);
 box-shadow: 0px 2px 5px 0 var(--shadow);
+border-radius: 8px;
 display: flex;
 flex-direction: column;
 }
@@ -292,6 +309,7 @@ flex-direction: column;
   height: 75px; 
    width: 250px;
   background-color: var(--succes);
+  border-radius: 8px;
   box-shadow: 0px 2px 5px 0 var(--shadow);
   display: flex;
   flex-direction: column;
@@ -301,7 +319,8 @@ flex-direction: column;
   height: 75px;
   width: 250px;
   margin: 3px;
-  background-color:  var(--succes);
+  background-color:  var(--warning);
+  border-radius: 8px;
   box-shadow: 0px 2px 5px 0 var(--shadow);
   display: flex;
   flex-direction: column;
@@ -311,6 +330,7 @@ font-weight: 500;
 }
 .desc-card-info{
 color: var(--texto);
+font-size: 1.3rem;
 font-weight: 700;
 }
   #factura{
@@ -331,6 +351,11 @@ font-weight: 700;
     
     }
     
+    .imgLogo{
+     max-width: 150px;
+     max-height: 150px;
+     
+    }
     .icon-wrappers{
       position:relative;
       float:left;

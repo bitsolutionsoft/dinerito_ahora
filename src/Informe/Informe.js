@@ -19,7 +19,7 @@ function Informe(props)  {
   //const [datosVentas, setdatosVentas] = useState([]);
   const [datosGanacias, setdatosGanacias] = useState([]);
   const[datosCredito, setDatosCredito] =useState([]);
-  
+  const[datosCobros, setDatosCobros]=useState([]);
 
 const [myChart, setmyChart] = useState("")
 
@@ -27,8 +27,9 @@ const [detalle, setDetalle] = useState([]);
 
 
   useEffect(() => {
-//datosGrafica();
+    balance(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"dia")
 }, [])
+/* funcion para traducir dia a español
 
 const traducir = (params) => {
 
@@ -76,29 +77,29 @@ const traducir = (params) => {
       
   }
   
-}
+}*/
 
 const verInforme = (params) => {
   switch(params){
     case "Dia":
       informeCuenta(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"dia")
-      balance(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"dia")
+      informeCobro(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"dia")
      // infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxsem")
       break;
       case "Semana":
         informeCuenta(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"semana")
-        balance(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"semana")
+        informeCobro(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"semana")
        // infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxmes")
         break;
         case "Mes":
           informeCuenta(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"mes")
-          balance(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"mes")
+          informeCobro(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"mes")
          // infoVentas(0,moment(new Date()).format("YYYY-MM-DD"),moment(new Date()).format("YYYY-MM-DD"),"ventaxanio")
           break;
           case "Rango":
             if(fechaFinal !=="" && fechainicio !==""){
             informeCuenta(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"rango")
-            balance(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"rango")
+            informeCobro(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"rango")
            // infoVentas(0,moment(fechainicio).format("YYYY-MM-DD"),moment(fechaFinal).format("YYYY-MM-DD"),"ventaxran")
             }else{
               swal("Aviso","Por favor de seleccionar la fecha inical y fecha final", "success");
@@ -110,7 +111,7 @@ const verInforme = (params) => {
   
 }
 
-/*
+/* consultar detalle de las ventas
 async function verDetalle (item,e)  {
  
   let detalle=await DataDetalle.consultarDetalle(item.idfactura);
@@ -144,6 +145,23 @@ const informeCuenta = async(idfac,fecha1,fecha2,accion)=>{
 
 }
 
+const informeCobro= async(idfac,fecha1,fecha2,accion)=>{
+  let informe={
+    "id": idfac,
+    "finicial":fecha1,
+    "ffinal":fecha2,
+    "accion":accion,
+  }
+  let dataCobro=await Datos.consultarInforme("ganancia",informe);
+  console.log(dataCobro)
+  if(dataCobro!== null){
+    if(dataCobro.message==="Success"){
+      setDatosCobros(dataCobro.res)
+    }
+  }
+
+}
+
 const balance=async(idfac,fecha1,fecha2,accion)=>{
   let informe={
     "id": idfac,
@@ -161,6 +179,8 @@ const balance=async(idfac,fecha1,fecha2,accion)=>{
 
 }
 
+
+/** funcion de informacion de ventas
 async function infoVentas(idfac,fecha1,fecha2,accion){
   let informe={
     "id_fac": idfac,
@@ -181,7 +201,8 @@ graficarDatos(dventas.res);
     }
   }
 
-}
+} 
+funcion de retonar la traduccion de los dias en español
   const returnLabel = (datos) => {
     let labels=[];
     datos.map(item=>{
@@ -191,6 +212,7 @@ graficarDatos(dventas.res);
     return labels;
   }
   
+//funcion para retonar la cantidad del total 
 const returnData = (datos) => {
   let data=[];
   datos.map(item=>{
@@ -203,8 +225,9 @@ const returnData = (datos) => {
 
 
 
+//funcionpara generar los datos de la grafica
   const graficarDatos = (datos) => {
-/**configuracion de  la grafica */ 
+//configuracion de  la grafica  
 //etiquetas
 const labels = returnLabel(datos);
 console.log(labels)
@@ -273,6 +296,7 @@ setmyChart( new Chart(ctx,config));
  
    
   }
+  */
   const abriFecha = (e) => { 
   let myInput = document.getElementById("exampleFecha");
   e.target.addEventListener("shown.bs.modal", function () {
@@ -281,13 +305,76 @@ setmyChart( new Chart(ctx,config));
 }
 
 return(
-<div className="container-fluid m-0 p-0 vh-100">
-  <div className="mb-1">   
-    <h5>Informe</h5>
-  </div>
+<div className="container-fluid m-0 p-0 vh-100 overflow-auto "> 
+<div className='secc_info'>
+  <h5>Estado general de cuentas</h5>
+<div >
+{datosGanacias.length > 0   ?  datosGanacias.map((item,key) =>(
+    <div className='contain-status' key={key}>
+ <div className='div-inversion'>
+<label className='title-card-info'>Capital</label>
+<label className='desc-card-info'>{Quetzal(item.capital) }</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Capital mas interes</label>
+<label className='desc-card-info'>{Quetzal(item.total) }</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Ganancia</label>
+<label className='desc-card-info'>{Quetzal((item.total)-(item.capital))}</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Total cobrado</label>
+<label className='desc-card-info'>{Quetzal(item.cobrado) }</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Total Pendiente </label>
+<label className='desc-card-info'>{Quetzal(item.pendiente )}</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Total atrasado </label>
+<label className='desc-card-info'>{Quetzal(item.atrasado )}</label>
+ </div>
+ </div>
+ )) 
+
+ : 
+
+ <div className='contain-status' >
+ <div className='div-inversion'>
+<label className='title-card-info'>Capital</label>
+<label className='desc-card-info'>{Quetzal(0) }</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Capital mas interes</label>
+<label className='desc-card-info'>{Quetzal(0) }</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Ganancia</label>
+<label className='desc-card-info'>{Quetzal(0)}</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Total cobrado</label>
+<label className='desc-card-info'>{Quetzal(0) }</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Total Pendiente </label>
+<label className='desc-card-info'>{Quetzal(0)}</label>
+ </div>
+ <div className='div-inversion'>
+ <label className='title-card-info'>Total atrasado </label>
+<label className='desc-card-info'>{Quetzal(0)}</label>
+ </div>
+ </div>
+ }
+  
+</div>
+</div>
+
+<div className="secc_info">
   <div className='row'>
       <div className='mb-1 ' >
-          <h6>Informe Por:</h6>
+          <h4>Ver informe por:</h4>
               <div className="row d-flex"> 
                <div className="form-check form-check-inline">
                <div className="form-check form-check-inline">
@@ -312,6 +399,116 @@ return(
       </div>
  
   </div>
+
+  <div className='row'>
+  <h5>Informe de credito</h5>
+<div >
+{datosCredito.length > 0   ?  datosCredito.map((item,key) =>(
+    <div className='contain-status' key={key}>
+   <div className='div-ventas'>
+ <label className='title-card-info'>Credito Activo</label>
+<label className='desc-card-info'>{item.activo }</label>
+   
+</div>
+ <div className='div-ventas'>
+<label className='title-card-info'>Credito Nuevo</label>
+<label className='desc-card-info'>{item.nuevo }</label>
+
+ </div>
+
+ 
+ <div className='div-ventas'>
+ <label className='title-card-info'>Credito Moroso</label>
+<label className='desc-card-info'>{item.moroso}</label>
+
+ </div>
+ </div>
+ )) 
+
+ : 
+
+ <div className='contain-status' >
+   <div className='div-ventas'>
+ <label className='title-card-info'>Credito Activo</label>
+<label className='desc-card-info'>0</label>
+ </div>
+ <div className='div-ventas'>
+<label className='title-card-info'>Credito Nuevo</label>
+<label className='desc-card-info'>0</label>
+ </div>
+
+ <div className='div-ventas'>
+
+ <label className='title-card-info'>Credito Moroso</label>
+<label className='desc-card-info'>0</label>
+ </div>
+ </div>
+ }
+  
+</div>
+</div>
+
+<div className='row mt-3'>
+  <h5>Informe de cobros</h5>
+<div >
+{datosCobros.length > 0   ?  datosCobros.map((item,key) =>(
+    <div className='contain-status' key={key}>
+ <div className='div-ganancia'>
+<label className='title-card-info'>Cantidad cobrado</label>
+<label className='desc-card-info'>{Quetzal(item.cobrado )}</label>
+
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Ganancia</label>
+<label className='desc-card-info'>{Quetzal(item.ganancia )}</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Cantidad pendiente por cobrar</label>
+<label className='desc-card-info'>{Quetzal(item.pendiente) }</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Cantidad Atrasada</label>
+<label className='desc-card-info'>{Quetzal(item.atrasado )}</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Cantidad de mora cobrado</label>
+<label className='desc-card-info'>{Quetzal(item.totalmora)}</label>
+
+ </div></div>
+ )) 
+
+ : 
+
+ <div className='contain-status' >
+ <div className='div-ganancia'>
+<label className='title-card-info'>Cantidad cobrado</label>
+<label className='desc-card-info'>{Quetzal(0)}</label>
+
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Ganancia</label>
+<label className='desc-card-info'>{Quetzal(0) }</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Cantidad pendiente por cobrar</label>
+<label className='desc-card-info'>{Quetzal(0)}</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Cantidad Atrasada</label>
+<label className='desc-card-info'>{Quetzal(0) }</label>
+ </div>
+ <div className='div-ganancia'>
+ <label className='title-card-info'>Cantidad de mora cobrado</label>
+<label className='desc-card-info'>{Quetzal(0)}</label>
+
+ </div>
+ </div>
+ }
+  
+</div>
+</div>
+
+</div>
 
   {/**modal tango de fecha */}
   <div
@@ -347,108 +544,7 @@ return(
   </div>
 </div>
   {/**final del modal rango de fecha */}
-<div>
-  <h6>Informe de credito</h6>
-<div >
-{datosCredito.length > 0   ?  datosCredito.map((item,key) =>(
-    <div className='contain-status' key={key}>
- <div className='div-ventas'>
-<label className='title-card-info'>Credito Nuevo</label>
-<label className='desc-card-info'>{item.nuevo }</label>
-<div class="progress">
-  <div class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar" style={{width: item.nuevo}} aria-valuenow={item.nuevo} aria-valuemin="0" aria-valuemax={item.activo}>{item.nuevo +"%"}</div>
-</div>
- </div>
- <div className='div-ventas'>
- <label className='title-card-info'>Credito Activo</label>
-<label className='desc-card-info'>{item.activo }</label>
-<div class="progress">
-  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: item.activo}} aria-valuenow={item.activo} aria-valuemin="0" aria-valuemax={item.activo}>{item.activo +"%"}</div>
-</div>
- </div>
- <div className='div-ventas'>
- <label className='title-card-info'>Credito Moroso</label>
-<label className='desc-card-info'>{item.moroso}</label>
-<div class="progress">
-  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: item.moroso}} aria-valuenow={item.moroso} aria-valuemin="0" aria-valuemax={item.activo}>{item.moroso +"%"}</div>
-</div>
- </div></div>
- )) 
-
- : 
-
- <div className='contain-status' >
- <div className='div-ventas'>
-<label className='title-card-info'>Credito Nuevo</label>
-<label className='desc-card-info'>0</label>
- </div>
- <div className='div-ventas'>
-
- <label className='title-card-info'>Credito Activo</label>
-<label className='desc-card-info'>0</label>
- </div>
- <div className='div-ventas'>
-
- <label className='title-card-info'>Credito Moroso</label>
-<label className='desc-card-info'>0</label>
- </div>
- </div>
- }
-  
-</div>
-</div>
-
-<div>
-  <h6>Estado de credito</h6>
-<div >
-{datosGanacias.length > 0   ?  datosGanacias.map((item,key) =>(
-    <div className='contain-status' key={key}>
- <div className='div-inversion'>
-<label className='title-card-info'>Cantida de credito</label>
-<label className='desc-card-info'>{item.credito > 0 ? Quetzal(item.cedito) : 0}</label>
- </div>
- <div className='div-inversion'>
- <label className='title-card-info'>Cantidad cobrada</label>
-<label className='desc-card-info'>{item.cobrado > 0 ? Quetzal(item.cobrado) : 0}</label>
- </div>
- <div className='div-inversion'>
- <label className='title-card-info'>Cantidad pediente</label>
-<label className='desc-card-info'>{item.pendiente > 0 ? Quetzal(item.pendiente) : 0}</label>
- </div>
- <div className='div-inversion'>
- <label className='title-card-info'>Ganancia </label>
-<label className='desc-card-info'>{item.ganancia > 0 ? Quetzal(item.ganancia) : 0}</label>
- </div>
- </div>
- )) 
-
- : 
-
- <div className='contain-status' >
- <div className='div-inversion'>
-<label className='title-card-info'>Cantidad de Credito</label>
-<label className='desc-card-info'>0</label>
- </div>
- <div className='div-inversion'>
-
- <label className='title-card-info'>Cantidada cobrada</label>
-<label className='desc-card-info'>0</label>
- </div>
- <div className='div-inversion'>
-
- <label className='title-card-info'>Cantidad  pediente</label>
-<label className='desc-card-info'>0</label>
- </div>
- 
- <div className='div-inversion'>
- <label className='title-card-info'>Ganancia </label>
-<label className='desc-card-info'>0</label>
- </div>
- </div>
- }
-  
-</div>
-</div>
+{/**
 <div className="row vh-70">
 
 
@@ -476,8 +572,8 @@ datosCredito.map((item,index)=>(
   <td>{moment.utc(item.fecha).format("DD/MM/YYYY")}</td>
   <td>{item.cliente}</td> 
   <td>{item.total}</td>
- {/** <td ><button  type="button" className="btn btn-sm-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>verDetalle(item,e.target)}><i style={{color: "#FABC2A"}} className="fa fa-info-circle gb-primary" aria-hidden="true"></i></button></td>
-*/} </tr>
+ comentar esta linea <td ><button  type="button" className="btn btn-sm-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>verDetalle(item,e.target)}><i style={{color: "#FABC2A"}} className="fa fa-info-circle gb-primary" aria-hidden="true"></i></button></td>
+ </tr>
 ))
 
 : null
@@ -489,7 +585,7 @@ datosCredito.map((item,index)=>(
 </div>
 
 </div>
- 
+ */} 
 {/**modal de detalle producto */}
 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div className="modal-dialog">

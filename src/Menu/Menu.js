@@ -11,6 +11,7 @@ import Cuenta from '../Cuenta/Cuenta';
 import Abono  from '../Abono/Abono';
 import Informe from '../Informe/Informe';
 import { DataContext } from '../Context/Context';
+import Cobros from '../Abono/Cobros';
 
 function Menu(props)  {
     const [screen, setScreen] = useState("");
@@ -99,7 +100,7 @@ const acceso = (modulo) => {
                    }
                
                 default:  
-                return <AlertModel tipo="success" titulo={usuario} msg="Bienvenido a Dinerito Ahora" />;
+                return <Cobros/>;
             }
            
      }

@@ -113,6 +113,7 @@ const SubirImagen =async (file) => {
   }
  }
 }
+
 const Preview = (file,setPreview) => { 
 setPreview(file.url)
 }
