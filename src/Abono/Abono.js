@@ -9,10 +9,10 @@ import moment from 'moment';
 import printJS from 'print-js';
 
 import DropDown from '../Component/DropDown';
-import ls, { set }  from "local-storage";
-import {AplicarMora, ConvetirClAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan, ObtenerTipoPago} from '../Funciones/Funciones';
-import { DataContext } from '../Context/Context';
-import { DiasPasado, Direccion, Mora,Nombre } from '../Host/Info';
+import ls  from "local-storage";
+import {AplicarMora, ConvetirPagoAData,  ObtenerTipoPago} from '../Funciones/Funciones';
+
+import {  Direccion, Mora,Nombre } from '../Host/Info';
 import logo from '../Img/logot.jpg';
 
 
