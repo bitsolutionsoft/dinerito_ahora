@@ -15,6 +15,12 @@ class Datos{
         .then((respDatos) => respDatos)
         .catch((error) =>error);
     }
+    ConsutaIDUser(table, id){
+        return fetch(`${host+table}/emp/${id}`,Header.headerGets())
+        .then(response=>response.json())
+        .then((respDatos) => respDatos)
+        .catch((error) =>error);
+    }
     NuevoReg(table,datos){
         return fetch(`${host+table}`,Header.headerPostCB(datos))
         .then(response =>response.json())

@@ -6,13 +6,14 @@ import Datos from '../Host/Datos';
 import {Quetzal} from '../Funciones/Moneda';
 
 import moment from 'moment';
+import printJS from 'print-js';
 
 import DropDown from '../Component/DropDown';
 import ls, { set }  from "local-storage";
 import {AplicarMora, ConvetirClAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan, ObtenerTipoPago} from '../Funciones/Funciones';
 import { DataContext } from '../Context/Context';
 import { DiasPasado, Direccion, Mora,Nombre } from '../Host/Info';
-import logo from '../Img/Logo.jpg';
+import logo from '../Img/logot.jpg';
 
 
 function Abono(props)  {
@@ -420,14 +421,20 @@ const AbrirConstancia = (item, e) => {
 }
 
 const Imprimir = () => { 
-  let  content=document.getElementById("vale").innerHTML;
-  let w=window.open('','', 'height=500, with=500')
-  w.document.write(content);
-  w.document.close();
-  w.focus();
-  w.print();
- // w.close();
-//return true;
+  
+ 
+ 
+  /*
+   let  content=document.getElementById("vale").innerHTML;
+  //let w=window.open('','', 'height=600, width=600')
+ let w=window.open()
+  window.document.write(content);
+ window.document.close();
+  window.focus();
+  window.print();
+
+  //w.close();
+//return true;*/
 }
     return(
         <div className='container-fluid m-0 p-0 vh-100'>
@@ -792,7 +799,7 @@ const Imprimir = () => {
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
-        <button type="button" className="btn btn-primary" onClick={()=>Imprimir()} >Imprimir</button>
+        <button type="button" className="btn btn-primary" onClick={()=>printJS('vale','html')} >Imprimir</button>
       </div>
     </div>
   </div>

@@ -535,7 +535,11 @@ z-index: 1000;
 .tag_visible{
   display: block;
 }
-
+@media print and(width:8cm) and(height:16cm){
+  @page{
+    margin: 0.5cm;
+  }
+}
 /*calendario
 input[type=date] {
 

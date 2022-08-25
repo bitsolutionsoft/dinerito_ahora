@@ -12,9 +12,10 @@ import Abono  from '../Abono/Abono';
 import Informe from '../Informe/Informe';
 import { DataContext } from '../Context/Context';
 import Cobros from '../Abono/Cobros';
+import Ajuste from './Ajuste';
 
 function Menu(props)  {
-    const [screen, setScreen] = useState("");
+    const [screen, setScreen] = useState("Cobros");
     const [usuario, setUsuario] =useState("");
 
     const [currentUser,setCurrentUser] = useState("");
@@ -60,6 +61,19 @@ const acceso = (modulo) => {
     function ColocarContent(){
       
          switch (screen) {
+            case 'Ajuste':
+                if(acceso("Ajuste")){
+                    return <Ajuste />
+                }else{
+                    return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a los del sistema" />
+                }
+            case 'Cobros del Día':
+                if(acceso("Cobros del Día")){
+                    return <Cobros />
+                }else{
+                    return <AlertModel tipo="warning" titulo="Aviso" msg="No tienes acceso a los cobros del dia" />
+                }
+           
                 case 'Plan':
                     if(acceso("Plan")){
                         return <Plan />
@@ -130,7 +144,7 @@ const acceso = (modulo) => {
                         </p>
                         <ul className="dropdown-menu dropdown-menu text-small shadow">
                        
-                       <li onClick={()=>setScreen("Usuario")}><button    className="dropdown-item" >Ajustes</button></li>
+                       <li onClick={()=>setScreen("Ajuste")}><button    className="dropdown-item" >Ajustes</button></li>
                      
                        <li>
                            <hr className="dropdown-divider"/>
@@ -140,7 +154,12 @@ const acceso = (modulo) => {
                     </div>
                     
                     <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                    
+                    <li onClick={()=>setScreen("Cobros del Día")}  className={screen === "Cobros del Día" ? nav_active : nav_item}>
+                            <div    className=" align-middle px-0">
+                                <i className="bi bi-list-task"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Pagos del dia</span>
+                            </div>
+                        </li>
+
                         <li onClick={()=>setScreen("Plan")}  className={screen === "Plan" ? nav_active : nav_item}>
                             <div    className=" align-middle px-0">
                                 <i className="bi bi-card-list"></i> <span className="ms-1 d-none d-md-none d-xl-inline">Plan</span>

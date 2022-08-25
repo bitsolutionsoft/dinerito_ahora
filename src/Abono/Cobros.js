@@ -1,7 +1,7 @@
 
 import React, { useState,useEffect, useContext } from 'react';
 import swal from "sweetalert";
-import SearchBar from '../Component/SearchBar';
+import SearchBar2 from '../Component/SearchBar2';
 import Datos from '../Host/Datos';
 import {Quetzal} from '../Funciones/Moneda';
 
@@ -12,8 +12,9 @@ import ls, { set }  from "local-storage";
 import {AplicarMora, ConvetirClAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan, ObtenerTipoPago} from '../Funciones/Funciones';
 import { DataContext } from '../Context/Context';
 import { DiasPasado, Direccion, Mora,Nombre } from '../Host/Info';
-import logo from '../Img/Logo.jpg';
-
+import logo from '../Img/logot.jpg';
+import {GetTotal,PagosPorFecha,TiposDePago} from '../Funciones/FiltrarPago'
+import printJS from 'print-js'
 
 function Cobros(props)  {
     const [idabono, setIdAbono] = useState("");
@@ -39,6 +40,7 @@ function Cobros(props)  {
     const [buscarTipoPago, setBuscarTipoPago] =useState("");
     const [accion, setAccion] = useState("new");
     const [isDisabled, setIsDisabled]=useState(false);
+    const [datosADefault,setDatosADefault]=useState([]);
 //datos de para la desplegar la table
 const [open, setOpen]=useState(false)
 const [buscarCuenta,setBuscarCuenta]=useState("");
@@ -53,8 +55,9 @@ const[prev_perfil, setPrev_perfil]=useState();
 const [prev_casa, setPrev_casa ]   =useState();
 const [prev_dpi, setPrev_dpi ]   =useState();
 const[classTag, setClassTag]=useState("tag_copy")
-
-
+const [fecha, setFecha]=useState(moment(new Date()).format("YYYY-MM-DD"));
+const[estadoP, setEstadoP]=useState('Pendiente');
+const[totalACobrar, setTotalACobrar]=useState();
 
 
   
@@ -92,13 +95,15 @@ for (let i  in datosCliente){
       }
     }
 const ConsultaAbono = async (reverse, id) => {
-  const datos_Abono= id <= 0 ? await Datos.Consulta("abono") : await Datos.ConsultaAbonoXP(id);
+  const datos_Abono=  await Datos.Consulta("abono");
   if(datos_Abono!==null){
     if(datos_Abono.message==="Success"){
     console.log(datos_Abono.res)
     let abonoAsc= reverse ? datos_Abono.res.reverse() : datos_Abono.res;
-    setDatosAbono(abonoAsc);
-    setFilterAbono(abonoAsc);
+    setDatosADefault(abonoAsc)
+    setDatosAbono(PagosPorFecha(abonoAsc,fecha));
+    setFilterAbono(PagosPorFecha(abonoAsc,fecha));
+    setTotalACobrar(abonoAsc,fecha,estadoP);
     }else{
       setDatosAbono([])
       setFilterAbono([])
@@ -278,8 +283,8 @@ for(let i in  datos){
       
       setDatosAbono(filterAbono.filter(function(item){
           return   item.concepto.toLowerCase().includes(text)|| item.comprobante.toLowerCase().includes(text) || item.estado.toLowerCase().includes(text) ;   
-        }).map(function({idcuenta, idempleado, concepto, monto,tipo_pago,comprobante,mora, estado}){
-          return{idcuenta, idempleado, concepto, monto,tipo_pago,comprobante,mora, estado}
+        }).map(function({idabono,idcuenta, idempleado, concepto, monto,tipo_pago,comprobante,mora, estado,empleado,nombre, fecha,diacobro}){
+          return{idabono,idcuenta, idempleado, concepto, monto,tipo_pago,comprobante,mora, estado,empleado,nombre, fecha,diacobro}
         })
        );
       
@@ -419,6 +424,37 @@ const AbrirConstancia = (item, e) => {
   });
 }
 
+const getDatosFiltrado = (fecha) => { 
+  setFecha(fecha);
+  setDatosAbono(PagosPorFecha(datosADefault,fecha));
+  setFilterAbono(PagosPorFecha(datosADefault,fecha));
+  setTotalACobrar(GetTotal(datosADefault,fecha,estadoP));
+ }
+
+ const getTipoEstado = (e) => { 
+  let buscarTexto=e.target.value;
+  setEstadoP(buscarTexto)
+
+  
+  let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
+  
+  let newDatos=filterAbono.filter(function(item){
+      return   item.estado.toLowerCase().includes(text);   
+    }).map(function({idabono,idcuenta, idempleado, concepto, monto,tipo_pago,comprobante,mora, estado,empleado,nombre, fecha,diacobro}){
+      return{idabono,idcuenta, idempleado, concepto, monto,tipo_pago,comprobante,mora, estado,empleado,nombre, fecha,diacobro}
+    });
+  setDatosAbono(
+    newDatos
+   );
+
+    setTotalACobrar(GetTotal(newDatos,fecha,buscarTexto))
+  /*setEstadoP(estado)
+  setDatosAbono(PagosPorFecha(datosADefault,fecha));
+  setFilterAbono(PagosPorFecha(datosADefault,fecha));
+  setTotalACobrar(GetTotal(datosADefault,fecha,estadoP));
+  */
+  }
+
 const Imprimir = () => { 
   let  content=document.getElementById("vale").innerHTML;
   let w=window.open('','', 'height=500, with=500')
@@ -436,20 +472,30 @@ const Imprimir = () => {
             </div>
             
   <div className='row'>
+    <div className='mb-1'>
+    <div className="input-group mb-3">
+  <span className="input-group-text">Seleccione el día: </span>
+  <input type="date" className="form-control form-control-sm" placeholder='01/02/2022' value={fecha} onChange={(e)=>getDatosFiltrado(moment(e.target.value).format("YYYY-MM-DD"))}/>
+ {/**  <i className="bi bi-calendar3 input-group-text"></i>*/}
+</div>
+<div >
+  <h4 className="" >{totalACobrar > 0 ? "Total a Cobrar:    "+Quetzal(totalACobrar) : "Total a Cobrar:  "+Quetzal(0.00)}</h4>
+</div>
+    </div>
       <div className='mb-1 ' >
           <h6>Filtrar por:</h6>
               <div className="row d-flex"> 
                <div className="form-check form-check-inline">
                <div className="form-check form-check-inline">
-                  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Pendiente"  onClick={(e)=>Busqueda(e)}/>
+                  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Pendiente" checked={estadoP === "Pendiente" ? true : false} onClick={(e)=>getTipoEstado(e)}/>
                   <label className="form-check-label" htmlFor="exampleRadios1">Pendiente</label>
                </div>
                <div className="form-check form-check-inline">
-                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Cancelado"  onClick={(e)=>Busqueda(e)} />
+                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Cancelado"  onClick={(e)=>getTipoEstado(e)} />
                  <label className="form-check-label" htmlFor="exampleRadios2">Cancelado</label>
                </div>
                <div className="form-check form-check-inline">
-                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="Atrasado"  onClick={(e)=>Busqueda(e)}/>
+                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="Atrasado"  onClick={(e)=>getTipoEstado(e)}/>
                  <label className="form-check-label" htmlFor="exampleRadios3">Atrasado</label> <br/>
                </div> 
              
@@ -459,13 +505,11 @@ const Imprimir = () => {
       </div>
  
   </div>
-            <SearchBar
+            <SearchBar2
             onChange={Busqueda} 
             value={buscar} 
             placeholder="Buscar Abono..."  
-            data_bs_toggle="modal"
-            data_bs_target="#exampleModal"
-            onClick={AbrirIngreso}
+          
             />
          
 {/**modal para ingreso de abono */}
@@ -568,7 +612,7 @@ const Imprimir = () => {
   
       
 <div className='form-outline mb-3'>
-<lable className="form-label" htmlFor="form1Examples1">Monto del proximo pago</lable>
+<label className="form-label" htmlFor="form1Examples1">Monto del proximo pago</label>
  <input disabled={!isDisabled} type="number" className="form-control form-control-sm"  placeholder='ej.: 10.00' value={prox_monto} onChange={(e)=>setProx_monto(e.target.value)}/>
 </div>
 </div>
@@ -650,19 +694,19 @@ const Imprimir = () => {
   <div className='d-flex row gap-2 justify-content-md-center'>
   <div className="gallery" >
   <img src={getIPERFIL} className="imgs" alt="..."/>
-  <div class="div_dec">
-    <lable className="card-title">Foto del cliente</lable> 
+  <div className="div_dec">
+    <label className="card-title">Foto del cliente</label> 
   </div>
 </div>
 <div className="gallery" >
   <img src={getICASA} className="imgs" alt="..."/>
-  <div class="div_dec">
+  <div className="div_dec">
     <label className="card-title">Foto de la residencia </label> 
   </div>
 </div>
 <div className="gallery">
   <img src={getIDPI} className="imgs" alt="..."/>
-  <div class="div_dec">
+  <div className="div_dec">
     <label className="card-title">Foto del DPI</label> 
   </div>
 </div>
@@ -749,7 +793,7 @@ const Imprimir = () => {
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
-        <button type="button" className="btn btn-primary" onClick={()=>Imprimir()} >Imprimir</button>
+        <button type="button" className="btn btn-primary" onClick={()=>printJS('vale','html')} >Imprimir</button>
       </div>
     </div>
   </div>
@@ -798,13 +842,15 @@ const Imprimir = () => {
    
   </i>
   <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton2">
-  <li  className="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleDetalle" onClick={(e)=>AbrirDetalle(item,e.target)}>Ver detalle</li>
-  <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>AbrirActualizar(item,e.target)} >Editar</li>
+  
+  <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>AbrirActualizar(item,e.target)} >Cobrar</li>
   <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleImprimir" onClick={(e)=>AbrirConstancia(item,e.target)} >Imprimir constancia</li>
   <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleUbicacion" onClick={(e)=>AbrirUbicacion(item,e.target)} >Ubicacion del Cliente</li>
-    <li  className="dropdown-item" onClick={()=>Eliminar(item.idabono)}>Eliminar</li>
-      
-   
+  <li  className="dropdown-item" onClick={()=>Eliminar(item.idabono)}>Eliminar</li>
+  {/* <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>AbrirActualizar(item,e.target)} >Agregar</li>
+  */}
+  <li  className="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleDetalle" onClick={(e)=>AbrirDetalle(item,e.target)}>Cobrado por:</li>
+  
   </ul>
 </div>
 
