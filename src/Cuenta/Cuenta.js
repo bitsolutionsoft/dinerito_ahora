@@ -284,7 +284,9 @@ const returnModalidad=(modalidad)=>{
         let siguiente= await Datos.NuevoReg("abono/prox",dats);
         if(siguiente !== null){
           if(siguiente.message==="Success"){
-        
+            swal("Abono","Los pagos fueron establecidos de  forma correcta","success");
+            ConsultarCuenta();
+
           }else{
                   swal("Abono","No se pudo Ingresar fecha del siguiente pago, verifique los datos","warning");
           }

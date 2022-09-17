@@ -11,7 +11,7 @@ import DropDown from '../Component/DropDown';
 import ls, { set }  from "local-storage";
 import {AplicarMora, ConvetirClAData,ConvetirPagoAData, Obtenercliente,ObtenerPlan, ObtenerTipoPago} from '../Funciones/Funciones';
 import { DataContext } from '../Context/Context';
-import { DiasPasado, Direccion, Mora,Nombre } from '../Host/Info';
+import { Info} from '../Host/Info';
 import logo from '../Img/logot.jpg';
 import {GetTotal,PagosPorFecha,TiposDePago} from '../Funciones/FiltrarPago'
 import printJS from 'print-js'
@@ -56,7 +56,7 @@ const [prev_casa, setPrev_casa ]   =useState();
 const [prev_dpi, setPrev_dpi ]   =useState();
 const[classTag, setClassTag]=useState("tag_copy")
 const [fecha, setFecha]=useState(moment(new Date()).format("YYYY-MM-DD"));
-const[estadoP, setEstadoP]=useState('Pendiente');
+const[estadoP, setEstadoP]=useState();
 const[totalACobrar, setTotalACobrar]=useState();
 
 
@@ -64,11 +64,12 @@ const[totalACobrar, setTotalACobrar]=useState();
 
     useEffect(()=>{
       
-        setIdEmpleado(ls.get("usuario").idempleado)
-       ConsultaAbono(false,0);
-      CunsultaTipoPago();
-      ConsultarCuenta();
-     ConsultarCliente();
+    setIdEmpleado(ls.get("usuario").idempleado)
+    ConsultaAbono(false,0);
+    CunsultaTipoPago();
+    ConsultarCuenta();
+    ConsultarCliente();
+    
     },[])
     
     const ConsultarCliente=async()=>{
@@ -181,10 +182,11 @@ setFilterPago(datosPago.res)
       let siguiente= await Datos.NuevoReg("abono/prox",dats);
       if(siguiente !== null){
         if(siguiente.message==="Success"){
+           swal("Abono","Se agrego correctamente","success");
           setIsDisabled(false)
           setProx_Pago("")
           ConsultaAbono(true,CuentaSeleccionada.idcuenta)
-          swal("Abono","Se agrego correctamente","success");
+         
         }else{
                 swal("Abono","No se pudo Ingresar fecha del siguiente pago, verifique los datos","warning");
         }
@@ -250,12 +252,13 @@ setMonto(datos.monto);
 setFechaPago(datos.fecha)
 setTipo_pago(datos.tipo_pago);
 setComprobante(datos.comprobante);
-
+ console.log(Info.mora)
 
 if(AplicarMora(new Date(), datos.fecha)){
-setMora(Mora)
+ 
+  setMora(Info.mora)
 }else{
-setMora(datos.mora !==null ? datos.mora : 0 )
+setMora(datos.mora !==null ? datos.mora : 0.00 )
 }
 
 setEstado(datos.estado)
@@ -431,11 +434,9 @@ const getDatosFiltrado = (fecha) => {
   setTotalACobrar(GetTotal(datosADefault,fecha,estadoP));
  }
 
- const getTipoEstado = (e) => { 
-  let buscarTexto=e.target.value;
+ const getTipoEstado = (buscarTexto) => { 
   setEstadoP(buscarTexto)
 
-  
   let text=buscarTexto.replace(/^\w/,(c) =>c.toLowerCase());
   
   let newDatos=filterAbono.filter(function(item){
@@ -448,11 +449,6 @@ const getDatosFiltrado = (fecha) => {
    );
 
     setTotalACobrar(GetTotal(newDatos,fecha,buscarTexto))
-  /*setEstadoP(estado)
-  setDatosAbono(PagosPorFecha(datosADefault,fecha));
-  setFilterAbono(PagosPorFecha(datosADefault,fecha));
-  setTotalACobrar(GetTotal(datosADefault,fecha,estadoP));
-  */
   }
 
 const Imprimir = () => { 
@@ -487,15 +483,15 @@ const Imprimir = () => {
               <div className="row d-flex"> 
                <div className="form-check form-check-inline">
                <div className="form-check form-check-inline">
-                  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Pendiente" checked={estadoP === "Pendiente" ? true : false} onClick={(e)=>getTipoEstado(e)}/>
+                  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Pendiente" checked={estadoP === "Pendiente" ? true : false} onClick={(e)=>getTipoEstado(e.target.value)}/>
                   <label className="form-check-label" htmlFor="exampleRadios1">Pendiente</label>
                </div>
                <div className="form-check form-check-inline">
-                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Cancelado"  onClick={(e)=>getTipoEstado(e)} />
+                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Cancelado"  onClick={(e)=>getTipoEstado(e.target.value)} />
                  <label className="form-check-label" htmlFor="exampleRadios2">Cancelado</label>
                </div>
                <div className="form-check form-check-inline">
-                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="Atrasado"  onClick={(e)=>getTipoEstado(e)}/>
+                 <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="Atrasado"  onClick={(e)=>getTipoEstado(e.target.value)}/>
                  <label className="form-check-label" htmlFor="exampleRadios3">Atrasado</label> <br/>
                </div> 
              
@@ -582,7 +578,7 @@ const Imprimir = () => {
        <label className="form-label" htmlFor="form1Example1">Estado</label>
        <div className="form-outline mb-4">
         <div className="form-check form-check-inline">
-  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Cancelado" ? true : false} onChange={() => setEstado("Cancelado")} selected/>
+  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Cancelado" ? true : false} onChange={() => setEstado("Cancelado")} />
   <label className="form-check-label" htmlFor="inlineRadio1">Cancelar</label>
 </div>
 <div className="form-check form-check-inline">
@@ -758,9 +754,9 @@ const Imprimir = () => {
   <img src={logo} className="imgLogo" alt="..."/>
 
   <div className="form-outline mb-4">
-       <h5 className="form-label" htmlFor="form1Example1" >{Nombre}</h5>
-       <h6 className="form-label" htmlFor="form1Example1" >{Direccion}</h6>
       
+  <h5 className="form-label" htmlFor="form1Example1" >{Info.nombre}</h5>
+       <h6 className="form-label" htmlFor="form1Example1" >{Info.direccion}</h6>
 
     <h6>Pago/Abono</h6>
     <p className="form-label" htmlFor="form1Example1" >{"Cuenta No.: "+abonSeleccionado.idcuenta}</p>

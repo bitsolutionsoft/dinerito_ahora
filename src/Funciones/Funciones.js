@@ -1,5 +1,5 @@
 import moment from "moment"
-import { DiasPasado } from "../Host/Info"
+import { Info } from "../Host/Info"
 
 const ConvetirPlanAData=(data)=>{
 return data.map((item,index)=>{
@@ -55,7 +55,7 @@ const ConvetirClAData=(data)=>{
           }
 
           const AplicarMora=(hoy, fechaPago)=>{
-            let dhoy=moment(hoy).subtract(DiasPasado,'days').format("YYYY-MM-DD").split("-")
+            let dhoy=moment(hoy).subtract(Info.diasmora,'days').format("YYYY-MM-DD").split("-")
             let fpago=moment(fechaPago).format("YYYY-MM-DD").split("-")
             console.log(dhoy,fpago)
             if(dhoy[0] >= fpago[0]){

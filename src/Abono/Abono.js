@@ -12,7 +12,7 @@ import DropDown from '../Component/DropDown';
 import ls  from "local-storage";
 import {AplicarMora, ConvetirPagoAData,  ObtenerTipoPago} from '../Funciones/Funciones';
 
-import {  Direccion, Mora,Nombre } from '../Host/Info';
+import {  Info} from '../Host/Info';
 import logo from '../Img/logot.jpg';
 
 
@@ -177,10 +177,11 @@ setFilterPago(datosPago.res)
       let siguiente= await Datos.NuevoReg("abono/prox",dats);
       if(siguiente !== null){
         if(siguiente.message==="Success"){
+            swal("Abono","Se agrego correctamente","success");
           setIsDisabled(false)
           setProx_Pago("")
           ConsultaAbono(true,CuentaSeleccionada.idcuenta)
-          swal("Abono","Se agrego correctamente","success");
+        
         }else{
                 swal("Abono","No se pudo Ingresar fecha del siguiente pago, verifique los datos","warning");
         }
@@ -249,7 +250,8 @@ setComprobante(datos.comprobante);
 
 
 if(AplicarMora(new Date(), datos.fecha)){
-setMora(Mora)
+  console.log(Info.mora)
+setMora(Info.mora)
 }else{
 setMora(datos.mora !==null ? datos.mora : 0 )
 }
@@ -764,8 +766,8 @@ const Imprimir = () => {
   <img src={logo} className="imgLogo" alt="..."/>
 
   <div className="form-outline mb-4">
-       <h5 className="form-label" htmlFor="form1Example1" >{Nombre}</h5>
-       <h6 className="form-label" htmlFor="form1Example1" >{Direccion}</h6>
+       <h5 className="form-label" htmlFor="form1Example1" >{Info.nombre}</h5>
+       <h6 className="form-label" htmlFor="form1Example1" >{Info.direccion}</h6>
       
 
     <h6>Pago/Abono</h6>

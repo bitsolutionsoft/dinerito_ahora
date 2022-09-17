@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import '../css/estilo.css'
 import ls from "local-storage";
-import {Nombre} from '../Host/Info';
+import {Info} from '../Host/Info';
 
 import Plan from '../Plan/Plan';
 import Empleado from '../Empleado/Empleado';
@@ -133,7 +133,7 @@ const acceso = (modulo) => {
             <div className="col-auto col-sm-auto  col-md-1 col-xl-2 px-sm-2 px-0 nav-lateral max-vh-100 ">
                 <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2  min-vh-100">
                     <p    className="d-flex align-items-center pb-3 mb-md-0 me-md-auto  text-decoration-none">
-                        <span className="fs-5 d-none d-none d-md-none d-xl-inline  text-center">{Nombre}</span>
+                        <span className="fs-5 d-none d-none d-md-none d-xl-inline  text-center">{Info.nombre}</span>
 
                 
                     </p>

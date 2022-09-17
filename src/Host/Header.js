@@ -47,6 +47,17 @@ class Header{
         }
         return headerPostCB;
     }
+    headerGETCBI(){
+        const headerPostCB={
+            method:'GET',
+            headers:{
+                accept:'application/json',
+                'Content-Type':'application/json',
+            }
+           
+        }
+        return headerPostCB;
+    }
 
 }
 export default new Header();

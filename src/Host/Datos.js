@@ -110,5 +110,12 @@ return  fetch(`${host}/img/delete/${name}`,{
                   .then((responsedatos) => responsedatos)
                   .catch((error) => error);
       }
+      
+      ConsultaInfo(table){
+        return fetch(`${host+table}/view`,Header.headerGETCBI())
+        .then(response => response.json())
+        .then((respDatos)=>respDatos)
+        .catch((error) =>error);
+    }
 }
 export default new Datos();
