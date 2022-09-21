@@ -56,7 +56,7 @@ const [prev_casa, setPrev_casa ]   =useState();
 const [prev_dpi, setPrev_dpi ]   =useState();
 const[classTag, setClassTag]=useState("tag_copy")
 const [fecha, setFecha]=useState(moment(new Date()).format("YYYY-MM-DD"));
-const[estadoP, setEstadoP]=useState();
+const[estadoP, setEstadoP]=useState('Pendiente');
 const[totalACobrar, setTotalACobrar]=useState();
 
 
@@ -100,15 +100,18 @@ const ConsultaAbono = async (reverse, id) => {
   if(datos_Abono!==null){
     if(datos_Abono.message==="Success"){
     console.log(datos_Abono.res)
-    let abonoAsc= reverse ? datos_Abono.res.reverse() : datos_Abono.res;
-    setDatosADefault(abonoAsc)
-    setDatosAbono(PagosPorFecha(abonoAsc,fecha));
-    setFilterAbono(PagosPorFecha(abonoAsc,fecha));
-    setTotalACobrar(abonoAsc,fecha,estadoP);
+//let abonoAsc= reverse ? datos_Abono.res.reverse() : datos_Abono.res;
+    setDatosADefault(datos_Abono.res)
+  //  getDatosFiltrado(moment(new Date()).format("YYYY-MM-DD"))
+    setDatosAbono(PagosPorFecha(datos_Abono.res,fecha));
+    setFilterAbono(PagosPorFecha(datos_Abono.res,fecha));
+    setTotalACobrar(GetTotal(datos_Abono.res,fecha,estadoP));
+    //getTipoEstado("Pendiente")
+    
     }else{
       setDatosAbono([])
       setFilterAbono([])
-      swal("Aviso","Esta cuenta no tiene pagos efectuados, seleccione otra!","warning");
+      swal("Aviso","No hay pagos para cobrar hoy","warning");
     }
   }
 }
@@ -578,8 +581,8 @@ const Imprimir = () => {
        <label className="form-label" htmlFor="form1Example1">Estado</label>
        <div className="form-outline mb-4">
         <div className="form-check form-check-inline">
-  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Cancelado" ? true : false} onChange={() => setEstado("Cancelado")} />
-  <label className="form-check-label" htmlFor="inlineRadio1">Cancelar</label>
+  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Cancelado" ? true : false} onChange={() => setEstado("Cancelado")} selected />
+  <label className="form-check-label" htmlFor="inlineRadio1">Cancelado</label>
 </div>
 <div className="form-check form-check-inline">
   <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value={estado} checked={estado === "Atrasado" ? true : false} onChange={() => setEstado("Atrasado")}/>

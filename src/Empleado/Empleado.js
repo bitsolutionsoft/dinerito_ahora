@@ -12,7 +12,7 @@ function Empleado(props)  {
     const [dpi, setDpi] = useState(""); 
     const [telefono, setTelefono] = useState("");
     const [correo, setCorreo] = useState("");
-    const [estado, setEstado] = useState("");
+    const [estado, setEstado] = useState("Activo");
 
     const [datos, setdatos] = useState([]);  
     const [encontrado, setencontrado] = useState([]);
@@ -119,7 +119,9 @@ function Empleado(props)  {
         }
       }
 
-      const GuardarCambios=()=>{
+      const GuardarCambios=(e)=>{
+        e.preventDefault();
+
         if(accion==="new"){
           Ingresar();
         }else{
@@ -328,7 +330,9 @@ const guardaruser = () => {
         <h5 className="modal-title">Ingreso de Empleado</h5>
         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+       <form onSubmit={(e)=>{GuardarCambios(e)}}>
       <div className="modal-body">
+       
       <div className="form-outline mb-4">
          <label className="form-label" htmlFor="form1Example1" hidden= {true} >Codigo de empleado</label>   
     <input type="text" id="form1Example1" className="form-control" hidden= {true} value={idempleado} onChange={(e) => setIdempleado(e.target.value)} />
@@ -336,23 +340,23 @@ const guardaruser = () => {
   </div>
   <div className="form-outline mb-4">
      <label className="form-label" htmlFor="form1Example2" >Nombre</label>
-     <input type="text" id="form1Example2" className="form-control" value={nombre}  onChange={(e) => setNombre(e.target.value)} />
+     <input type="text" id="form1Example2" className="form-control" value={nombre}  onChange={(e) => setNombre(e.target.value)} required />
    
   </div>
   <div className="form-outline mb-4">
-       <label className="form-label" htmlFor="form1Example3" >Interes</label>
-        <input type="text" id="form1Example3" className="form-control" value={apellido}  onChange={(e) => setApellido(e.target.value)} />
+       <label className="form-label" htmlFor="form1Example3" >Apellido</label>
+        <input type="text" id="form1Example3" className="form-control" value={apellido}  onChange={(e) => setApellido(e.target.value)} required />
 
   </div>
   <div className="form-outline mb-4">
        <label className="form-label" htmlFor="form1Example4" >DPI</label>
-        <input type="text" id="form1Example4" className="form-control" value={dpi}  onChange={(e) => setDpi(e.target.value)} />
+        <input type="number" autoComplete='false' id="form1Example4" className="form-control" value={dpi}  onChange={(e) => setDpi(e.target.value)} required />
 
   </div>
 
   <div className="form-outline mb-4">
        <label className="form-label" htmlFor="form1Example5" >Telefono</label>
-        <input type="text" id="form1Example5" className="form-control" value={telefono}  onChange={(e) => setTelefono(e.target.value)} />
+        <input type="number" id="form1Example5" className="form-control" value={telefono}  onChange={(e) => setTelefono(e.target.value)}  required/>
 
   </div>
   
@@ -362,7 +366,7 @@ const guardaruser = () => {
        <label className="form-label" htmlFor="form1Example6">Estado</label>
        <div className="form-outline mb-4">
         <div className="form-check form-check-inline">
-  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Activo" ? true : false} onChange={() => setEstado("Activo")} selected/>
+  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Activo" ? true : false} onChange={() => setEstado("Activo")} />
   <label className="form-check-label" htmlFor="inlineRadio1">Activo</label>
 </div>
 <div className="form-check form-check-inline">
@@ -372,11 +376,13 @@ const guardaruser = () => {
 </div>
 
   </div>
+     
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" className="btn btn-primary" onClick={()=>GuardarCambios()} >Guardar</button>
+        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>        
+        <input type="submit" className="btn btn-primary" value="Guardar" />
       </div>
+       </form>
     </div>
   </div>
 </div>

@@ -24,6 +24,7 @@ function Cuenta(props)  {
     const[inicio_pago,setInicio_pago]=useState("");
     const[cant_pago,setCant_pago]=useState("");
     const [monto_pago,setMonto_pago]=useState("");
+    const [montoAPagar,setMontoAPagar]=useState("");
 
     //datos de cliente y de plan
     const [datos, setdatos] = useState([]);  
@@ -55,9 +56,11 @@ function Cuenta(props)  {
     const ConsultarCuenta=async()=>{
       const datos=await Datos.Consulta("cuenta");
       if(datos!==null){
+        if(datos.message ==="Success"){
         console.log(datos.res);
         setdatos(datos.res);
         setencontrado(datos.res)
+      }
       }
     }
 const ConsultaCliente = async (reverse) => {
@@ -169,13 +172,16 @@ var myInput = document.getElementById("exampleModal");
         myInput.focus();
       })
      }
+
     const CalcularPagos = (item,e) => { 
       setCuentaSeleccionado(item)
+      calcularCuota(item)
       let myInput=document.getElementById("exampleModalC");
       e.addEventListener("shown.bs.modal",()=>{
         myInput.focus();
       })
-     }
+
+    }
     const Busqueda =(e)=>{
       let buscarTexto=e.target.value;
       setbuscar(buscarTexto);
@@ -244,26 +250,41 @@ const GuardarSiguiente = () => {
   }
    siguientePago(dats)
  }
-const GuardarPagos = (second) => { 
- 
-  for(let i =0; i<cant_pago;i++){
-     let dats={
-    idabono:0,
-    idcuenta: cuentaSelecciondo.idcuenta,
-    idempleado:idempleado,
-    concepto:"-",
-    monto:Decimal(monto_pago),
-    tipo_pago:1,
-    comprobante:"-",
-    mora:"0",
-    prox_pago:moment(inicio_pago).add(i,returnModalidad(modalidadpago)).format("YYYY-MM-DD h:mm:ss"),
-    estado:"Pendiente"
-  }
-
-    siguientePago(dats)
+const GuardarPagos =async (second) => { 
+ try {
+await insertPagos();
+await ConsultarCuenta();
+await limpiarpagos()
+} catch(error){
+    console.log(error)
   }
  }
-      
+ async function insertPagos (){
+  for(let i =0; i<cant_pago;i++){
+    let dats={
+   idabono:0,
+   idcuenta: cuentaSelecciondo.idcuenta,
+   idempleado:idempleado,
+   concepto:"-",
+   monto:Decimal(monto_pago),
+   tipo_pago:1,
+   comprobante:"-",
+   mora:"0",
+   prox_pago:moment(inicio_pago).add(i,returnModalidad(modalidadpago)).format("YYYY-MM-DD h:mm:ss"),
+   estado:"Pendiente"
+ }
+   siguientePago(dats)
+}
+ }
+
+ function limpiarpagos()     {
+  setCuentaSeleccionado([]);
+  setMonto_pago("");
+  setMontoAPagar("");
+  setCant_pago("");
+
+ }
+
 const returnModalidad=(modalidad)=>{
   switch(modalidad){
     case "Dia":
@@ -285,7 +306,7 @@ const returnModalidad=(modalidad)=>{
         if(siguiente !== null){
           if(siguiente.message==="Success"){
             swal("Abono","Los pagos fueron establecidos de  forma correcta","success");
-            ConsultarCuenta();
+//            ConsultarCuenta();
 
           }else{
                   swal("Abono","No se pudo Ingresar fecha del siguiente pago, verifique los datos","warning");
@@ -293,14 +314,17 @@ const returnModalidad=(modalidad)=>{
         
       }
        }
+
       
-const calcularCuota = (cant) => { 
-  setCant_pago(cant)
-  if(cant > 0)
+const calcularCuota = (cuenta) => { 
+  setCant_pago(cuenta.plan_dia)
+  if(cuenta.plan_dia> 0)
 {
-  let monto=cuentaSelecciondo.monto;
-  let interes=(monto*(cuentaSelecciondo.interes/100));
-  let cuota=(monto/cant)+(interes)
+  let monto=cuenta.monto;
+  let interes=(monto*(cuenta.interes/100));
+  let totalapagar= monto +(interes *cuenta.plan_dia);
+  let cuota=(totalapagar/cuenta.plan_dia);
+  setMontoAPagar(totalapagar);
   setMonto_pago(cuota)
 }else{
   setMonto_pago("")
@@ -347,7 +371,7 @@ const calcularCuota = (cant) => {
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Cliente</label>
       <DropDown 
-        dato = {ConvetirClAData(cliente)} 
+        dato = {cliente !== undefined ? ConvetirClAData(cliente) : null} 
         selected={idcliente} 
         setSelected={setIdCliente}  
         value={buscarCl}  
@@ -359,7 +383,7 @@ const calcularCuota = (cant) => {
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Plan</label>
       <DropDown 
-        dato = {ConvetirPlanAData(plan)} 
+        dato = {plan !== undefined ? ConvetirPlanAData(plan) : null} 
         selected={idplan} 
         setSelected={setIdPlan}  
         value={buscarPlan}  
@@ -378,7 +402,7 @@ const calcularCuota = (cant) => {
        <label className="form-label" htmlFor="form1Example1">Estado</label>
        <div className="form-outline mb-4">
         <div className="form-check form-check-inline">
-  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Activo" ? true : false} onChange={() => setEstado("Activo")} selected/>
+  <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Activo" ? true : false} onChange={() => setEstado("Activo")} />
   <label className="form-check-label" htmlFor="inlineRadio1">Activo</label>
 </div>
 <div className="form-check form-check-inline">
@@ -453,19 +477,31 @@ const calcularCuota = (cant) => {
 
       <div className="input-group mb-3">
         <label className="form-label " htmlFor="form1Example1" >Monto de la cuenta:</label>
-        <label className='form-label ms-3 '>{cuentaSelecciondo.monto !== undefined   ? cuentaSelecciondo.monto : 0}</label>
+        <label className='form-label ms-3 '>{cuentaSelecciondo.monto !== undefined   ? Quetzal(cuentaSelecciondo.monto) :  Quetzal(0)}</label>
          </div>
          <div className="input-group mb-3">
         <label className="form-label " htmlFor="form1Example1" >Interes:</label>
         <label className='form-label ms-3'>{cuentaSelecciondo.interes !== undefined   ? cuentaSelecciondo.interes+" %" : 0 }</label>
          </div>
 
+   <div className="input-group mb-3">
+        <label className="form-label " htmlFor="form1Example1" >Plan día:</label>
+        <label className='form-label ms-3'>{cuentaSelecciondo.plan_dia !== undefined   ? cuentaSelecciondo.plan_dia : 0 }</label>
+         </div>
+
+         <div className="input-group mb-3">
+        <label className="form-label " htmlFor="form1Example1" >Capital + interes :</label>
+        <label className='form-label ms-3'>{ Quetzal(montoAPagar)}</label>
+         </div>
+
+      
+{/** 
       <div className="form-outline mb-4">
         
-        <label className="form-label" htmlFor="form1Example1" >Ingrese la cantidad de pagos</label>
-            <input type="text" id="form1Example1" className="form-control" value={cant_pago}  onChange={(e) => {calcularCuota(e.target.value)} } />
+        <label className="form-label" htmlFor="form1Example1" >Paln días</label>
+            <input type="text" contentEditable={true}  id="form1Example1" className="form-control" value={cant_pago}  onChange={(e) => {calcularCuota(e.target.value)} } />
          </div>
-        
+*/}        
   <div className="form-outline mb-4 center">
        <label className="form-label" htmlFor="form1Example1">Seleccione la modalidad de pago</label>
        <div className="form-outline mb-4">

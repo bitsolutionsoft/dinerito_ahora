@@ -391,7 +391,7 @@ setClassTag("tag_copy")
 
   </div>
   <div className="form-outline mb-4">
-          <label for="formFile" className="form-label" htmlFor="form1Example1" >Foto del Cliente</label>
+          <label  className="form-label" htmlFor="form1Example1" >Foto del Cliente</label>
         <div className="custom-file"> 
     <input type="file" className="form-control"  id="formFile"  aria-describedby="inputGroupFileAddon01" name={f_perfil} onChange={(e)=>{setF_perfil(e.target.files[0]); GetPreview(e.target.files[0],setPrev_perfil)}} />
     <img src={prev_perfil} alt="..." height={50} width={50}></img>
@@ -402,7 +402,7 @@ setClassTag("tag_copy")
  </div>
 
   <div className="form-outline mb-4">
-      <label for="formFile" className="form-label" htmlFor="form1Example1" >Foto  de la casa</label>
+      <label  className="form-label" htmlFor="form1Example1" >Foto  de la casa</label>
       <div className="custom-file">
     <input type="file" className="form-control"  id="formFile" aria-describedby="inputGroupFileAddon01" name={f_casa} onChange={(e)=>{setF_casa(e.target.files[0]); GetPreview(e.target.files[0],setPrev_casa)}}/>
     <img src={prev_casa} alt="..." height={50} width={50}></img>
@@ -479,19 +479,19 @@ setClassTag("tag_copy")
   <div className='d-flex row gap-2 justify-content-md-center'>
   <div className="gallery" >
   <img src={getIPERFIL} className="imgs" alt="..."/>
-  <div class="div_dec">
-    <lable className="card-title">Foto del cliente</lable> 
+  <div className="div_dec">
+    <label className="card-title">Foto del cliente</label> 
   </div>
 </div>
 <div className="gallery" >
   <img src={getICASA} className="imgs" alt="..."/>
-  <div class="div_dec">
+  <div className="div_dec">
     <label className="card-title">Foto de la residencia </label> 
   </div>
 </div>
 <div className="gallery">
   <img src={getIDPI} className="imgs" alt="..."/>
-  <div class="div_dec">
+  <div className="div_dec">
     <label className="card-title">Foto del DPI</label> 
   </div>
 </div>

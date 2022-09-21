@@ -72,8 +72,10 @@ const[classTag, setClassTag]=useState("tag_copy")
     const ConsultarCliente=async()=>{
       const datos=await Datos.Consulta("cliente");
       if(datos!==null){
+        if(datos.message === "Success"){
         console.log(datos.res);
         setDatosCliente(datos.res)
+        }
       }
     }
 
@@ -87,9 +89,11 @@ for (let i  in datosCliente){
     const ConsultarCuenta=async()=>{
       const datos=await Datos.Consulta("cuenta");
       if(datos!==null){
+        if(datos.message ==="Success"){
         console.log(datos.res);
         setdatos(datos.res);
         setencontrado(datos.res)
+        }
       }
     }
 const ConsultaAbono = async (reverse, id) => {
@@ -97,9 +101,9 @@ const ConsultaAbono = async (reverse, id) => {
   if(datos_Abono!==null){
     if(datos_Abono.message==="Success"){
     console.log(datos_Abono.res)
-    let abonoAsc= reverse ? datos_Abono.res.reverse() : datos_Abono.res;
-    setDatosAbono(abonoAsc);
-    setFilterAbono(abonoAsc);
+   // let abonoAsc= reverse ? datos_Abono.res.reverse() : datos_Abono.res;
+    setDatosAbono(datos_Abono.res);
+    setFilterAbono(datos_Abono.res);
     }else{
       setDatosAbono([])
       setFilterAbono([])
@@ -591,7 +595,7 @@ const Imprimir = () => {
        <div className="form-outline mb-4">
         <div className="form-check form-check-inline">
   <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value={estado} checked={estado === "Cancelado" ? true : false} onChange={() => setEstado("Cancelado")} selected/>
-  <label className="form-check-label" htmlFor="inlineRadio1">Cancelar</label>
+  <label className="form-check-label" htmlFor="inlineRadio1">Cancelado</label>
 </div>
 <div className="form-check form-check-inline">
   <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value={estado} checked={estado === "Atrasado" ? true : false} onChange={() => setEstado("Atrasado")}/>
@@ -620,7 +624,7 @@ const Imprimir = () => {
   
       
 <div className='form-outline mb-3'>
-<lable className="form-label" htmlFor="form1Examples1">Monto del proximo pago</lable>
+<label className="form-label" htmlFor="form1Examples1">Monto del proximo pago</label>
  <input disabled={!isDisabled} type="number" className="form-control form-control-sm"  placeholder='ej.: 10.00' value={prox_monto} onChange={(e)=>setProx_monto(e.target.value)}/>
 </div>
 </div>
@@ -702,19 +706,19 @@ const Imprimir = () => {
   <div className='d-flex row gap-2 justify-content-md-center'>
   <div className="gallery" >
   <img src={getIPERFIL} className="imgs" alt="..."/>
-  <div class="div_dec">
-    <lable className="card-title">Foto del cliente</lable> 
+  <div className="div_dec">
+    <label className="card-title">Foto del cliente</label> 
   </div>
 </div>
 <div className="gallery" >
   <img src={getICASA} className="imgs" alt="..."/>
-  <div class="div_dec">
+  <div className="div_dec">
     <label className="card-title">Foto de la residencia </label> 
   </div>
 </div>
 <div className="gallery">
   <img src={getIDPI} className="imgs" alt="..."/>
-  <div class="div_dec">
+  <div className="div_dec">
     <label className="card-title">Foto del DPI</label> 
   </div>
 </div>
