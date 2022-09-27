@@ -317,13 +317,8 @@ const guardaruser = () => {
          
 {/**modal para ingreso de empleado */}
 
-  <div
-          className="modal fade"
-          id="exampleModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden={true}
-        >
+  <form onSubmit={(e)=>{GuardarCambios(e)}} className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel"  aria-hidden={true}  >
+  
   <div className="modal-dialog modal-dialog-scrollable">
     <div className="modal-content">
       <div className="modal-header">
@@ -332,7 +327,7 @@ const guardaruser = () => {
       </div>
        
       <div className="modal-body">
-       <form onSubmit={(e)=>{GuardarCambios(e)}}>
+  
       <div className="form-outline mb-4">
          <label className="form-label" htmlFor="form1Example1" hidden= {true} >Codigo de empleado</label>   
     <input type="text" id="form1Example1" className="form-control" hidden= {true} value={idempleado} onChange={(e) => setIdempleado(e.target.value)} />
@@ -382,11 +377,13 @@ const guardaruser = () => {
         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>        
         <input type="submit" className="btn btn-primary" value="Guardar" />
       </div>
-       </form> 
+     
        </div>
     </div>
+      
   </div>
-</div>
+
+</form>
 
 {/**final del modal para ingreso de empleado */}
 

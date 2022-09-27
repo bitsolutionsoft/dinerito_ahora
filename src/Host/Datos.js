@@ -89,6 +89,7 @@ class Datos{
           .then(resdatos=>resdatos)
           .catch((error)=>console.log(error))  
     }
+    
     DeleteImg(name){
 return  fetch(`${host}/img/delete/${name}`,{
             method: 'GET',

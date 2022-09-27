@@ -243,7 +243,8 @@ const BorarImagen = async (name) => {
         }
       }
     }
-    const GuardarCambios=()=>{
+    const GuardarCambios=(e)=>{
+      e.preventDefault();
       if(accion==="new"){
         Ingresar();
       }else{
@@ -338,12 +339,14 @@ setClassTag("tag_copy")
          
 {/**modal para ingreso de empleado */}
 
-  <div
-          className="modal fade"
+  <form
+          className="modal fade "
           id="exampleModal"
           tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden={true}
+          onSubmit={(e)=>{GuardarCambios(e)}}
+          
         >
   <div className="modal-dialog modal-dialog-scrollable">
     <div className="modal-content">
@@ -359,73 +362,69 @@ setClassTag("tag_copy")
 
   </div>
   <div className="form-outline mb-4">
-      <label className="form-label" htmlFor="form1Example1" >Nombre</label>
+      <label className="form-label" htmlFor="form1Example1">Nombre</label>
    
-          <input type="text" id="form1Example1" className="form-control" value={nombre}  onChange={(e) => setNombre(e.target.value)} />
-         
+          <input type="text" id="form1Example1" className="form-control" value={nombre}  onChange={(e) => setNombre(e.target.value)}  required/>
+           
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Apellido</label>
   
-        <input type="text" id="form1Example1" className="form-control" value={apellido}  onChange={(e) => setApellido(e.target.value)} />
+        <input type="text" id="form1Example1" className="form-control" value={apellido}  onChange={(e) => setApellido(e.target.value)} required/>
       
 
   </div>
   <div className="form-outline mb-4">
 
        <label className="form-label" htmlFor="form1Example1" >Telefono</label>
-        <input type="text" id="form1Example1" className="form-control" value={telefono}  onChange={(e) => setTelefono(e.target.value)} />
+        <input type="number" id="form1Example1" className="form-control" value={telefono}  onChange={(e) => setTelefono(e.target.value.slice(0,8))} required/>
 
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Dirección</label>
    
-          <input type="text" id="form1Example1" className="form-control" value={direccion}  onChange={(e) => setDreccion(e.target.value)} />
+          <input type="text" id="form1Example1" className="form-control" value={direccion}  onChange={(e) => setDreccion(e.target.value)} required />
          
   </div>
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Numero de DPI</label>
   
-        <input type="text" id="form1Example1" className="form-control" value={dpi}  onChange={(e) => setDpi(e.target.value)} />
+        <input type="number"  id="form1Example1" className="form-control" value={dpi}  onChange={(e) => setDpi(e.target.value.slice(0,13))} required/>
       
 
   </div>
   <div className="form-outline mb-4">
           <label  className="form-label" htmlFor="form1Example1" >Foto del Cliente</label>
         <div className="custom-file"> 
-    <input type="file" className="form-control"  id="formFile"  aria-describedby="inputGroupFileAddon01" name={f_perfil} onChange={(e)=>{setF_perfil(e.target.files[0]); GetPreview(e.target.files[0],setPrev_perfil)}} />
+    <input type="file" className="form-control"  id="formFile"  aria-describedby="inputGroupFileAddon01" name={f_perfil} onChange={(e)=>{setF_perfil(e.target.files[0]); GetPreview(e.target.files[0],setPrev_perfil)}} required/>
     <img src={prev_perfil} alt="..." height={50} width={50}></img>
   </div>
 
-      {/**   <input type="text" id="form1Example1" className="form-control" value={f_perfil}  onChange={(e) => setF_perfil(e.target.value)} />
-*/} 
  </div>
 
   <div className="form-outline mb-4">
       <label  className="form-label" htmlFor="form1Example1" >Foto  de la casa</label>
       <div className="custom-file">
-    <input type="file" className="form-control"  id="formFile" aria-describedby="inputGroupFileAddon01" name={f_casa} onChange={(e)=>{setF_casa(e.target.files[0]); GetPreview(e.target.files[0],setPrev_casa)}}/>
+    <input type="file" className="form-control"  id="formFile" aria-describedby="inputGroupFileAddon01" name={f_casa} onChange={(e)=>{setF_casa(e.target.files[0]); GetPreview(e.target.files[0],setPrev_casa)}} required/>
     <img src={prev_casa} alt="..." height={50} width={50}></img>
   </div>
-           {/**  <input type="text" id="form1Example1" className="form-control" value={f_casa}  onChange={(e) => setF_casa(e.target.value)} />
-     */}     
+         
   </div>
 
   <div className="form-outline mb-4">
       <label className="form-label" htmlFor="form1Example1" >Foto del DPI</label>
       <div className="custom-file">
         
-    <input type="file" className="form-control"  id="formFile" aria-describedby="inputGroupFileAddon01" name={f_dpi} onChange={(e)=>{setF_dpi(e.target.files[0]); GetPreview(e.target.files[0],setPrev_dpi)}}/>
+    <input type="file" className="form-control"  id="formFile" aria-describedby="inputGroupFileAddon01" name={f_dpi} onChange={(e)=>{setF_dpi(e.target.files[0]); GetPreview(e.target.files[0],setPrev_dpi)}} required/>
     <img src={prev_dpi} alt="..." height={50} width={50}></img>
   </div>
-      {/**    <input type="text" id="form1Example1" className="form-control" value={f_dpi}  onChange={(e) => setF_dpi(e.target.value)} />
-      */}  
+    
 
   </div>
   <div className="form-outline mb-4">
        <label className="form-label" htmlFor="form1Example1" >Ubicación</label>
        <div className='input-group'>
-       <input type="text" className="form-control" placeholder="ej: 14.02,-90.3" disabled={true} aria-label="Recipient's username" aria-describedby="basic-addon2" value={ubicacion}  onChange={(e) => setUbicacion(e.target.value)}/>
+       <input type="text" className="form-control" placeholder="ej: 14.02,-90.3" disabled={true} aria-label="Recipient's username" aria-describedby="basic-addon2" value={ubicacion}  onChange={(e) => setUbicacion(e.target.value)} required/>
   <span className="input-group-text" id="basic-addon2" onClick={()=>{getUbicacion()}}><i className='bi bi-geo-alt-fill'></i> </span>
 </div>
 
@@ -451,11 +450,11 @@ setClassTag("tag_copy")
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" className="btn btn-primary" onClick={()=>GuardarCambios()} >Guardar</button>
+        <button type="submit" className="btn btn-primary" >Guardar</button>
       </div>
     </div>
   </div>
-</div>
+</form>
 {/** fin del modal de ingreso cliente */}
 
 {/**inicio del modal de detalles del cliente */}
@@ -569,7 +568,7 @@ setClassTag("tag_copy")
 
   <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleDetalle" onClick={(e)=>AbrirDetalle(item,e.target)} >Detalles</li>
   <li className=" dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e)=>AbrirActualizar(item,e.target)} >Editar</li>
-    <li  className="dropdown-item" onClick={()=>Eliminar(item.idcliente)}>Eliminar</li>
+    <li  className="dropdown-item" onClick={()=>Eliminar(item)}>Eliminar</li>
 
       
    
